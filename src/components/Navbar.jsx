@@ -33,12 +33,14 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/" onClick={closeMenu}>성장 관리</Link>
-        {currentUser && (
-          <button className="hamburger" onClick={toggleMenu}>
-            &#9776; {/* Hamburger Icon */}
-          </button>
-        )}
       </div>
+
+      {currentUser && (
+        <button className="hamburger" onClick={toggleMenu}>
+          &#9776; {/* Hamburger Icon */}
+        </button>
+      )}
+
       <div className={`navbar-links ${isOpen ? 'active' : ''}`}>
         {currentUser ? (
           <>
