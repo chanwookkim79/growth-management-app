@@ -38,11 +38,9 @@ const Navbar = () => {
         <Link to="/" onClick={closeMenu}>성장 관리</Link>
       </div>
 
-      {currentUser && (
-        <button className="hamburger" onClick={toggleMenu}>
-          &#9776; {/* Hamburger Icon */}
-        </button>
-      )}
+      <button className="hamburger" onClick={toggleMenu}>
+        &#9776; {/* Hamburger Icon */}
+      </button>
 
       <div className={`navbar-links ${isOpen ? 'active' : ''}`}>
         {currentUser ? (

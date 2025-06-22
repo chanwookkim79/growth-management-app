@@ -23,14 +23,14 @@
 }
 
 .member-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 20px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .member-item:hover {
@@ -46,14 +46,15 @@
 
 .member-basic {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 0.25rem;
 }
 
 .member-name {
+  font-weight: bold;
   font-size: 1.2rem;
-  font-weight: 600;
-  color: #444;
+  color: #333;
 }
 
 .member-dob {
@@ -64,9 +65,9 @@
 .member-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  font-size: 0.85rem;
-  color: #666;
+  gap: 5px;
+  cursor: pointer;
+  font-weight: normal;
 }
 
 .member-stats span {
@@ -199,4 +200,22 @@
   .member-stats {
     justify-content: center;
   }
+}
+
+.gender-group {
+  margin-top: 15px;
+}
+
+.gender-group .radio-buttons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.gender-group .radio-buttons label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-weight: normal; /* To override other label styles if any */
 } 

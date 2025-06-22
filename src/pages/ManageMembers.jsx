@@ -13,7 +13,8 @@ const ManageMembers = () => {
     name: '',
     dob: '',
     height: '',
-    weight: ''
+    weight: '',
+    gender: ''
   });
 
   const fetchMembers = async () => {
@@ -55,13 +56,14 @@ const ManageMembers = () => {
       name: member.name,
       dob: member.dob,
       height: member.initialData.height.toString(),
-      weight: member.initialData.weight.toString()
+      weight: member.initialData.weight.toString(),
+      gender: member.gender || ''
     });
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    if (!editForm.name || !editForm.dob || !editForm.height || !editForm.weight) {
+    if (!editForm.name || !editForm.dob || !editForm.height || !editForm.weight || !editForm.gender) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -74,6 +76,7 @@ const ManageMembers = () => {
       await updateDoc(memberDocRef, {
         name: editForm.name,
         dob: editForm.dob,
+        gender: editForm.gender,
         initialData: {
           height: Number(editForm.height),
           weight: Number(editForm.weight),
@@ -84,7 +87,7 @@ const ManageMembers = () => {
 
       alert('회원 정보가 성공적으로 수정되었습니다.');
       setEditingMember(null);
-      setEditForm({ name: '', dob: '', height: '', weight: '' });
+      setEditForm({ name: '', dob: '', height: '', weight: '', gender: '' });
       fetchMembers();
     } catch (error) {
       console.error("Error updating document: ", error);
@@ -94,7 +97,7 @@ const ManageMembers = () => {
 
   const handleCancelEdit = () => {
     setEditingMember(null);
-    setEditForm({ name: '', dob: '', height: '', weight: '' });
+    setEditForm({ name: '', dob: '', height: '', weight: '', gender: '' });
   };
 
   const getMemberStats = (member) => {
@@ -169,6 +172,33 @@ const ManageMembers = () => {
                       />
                     </div>
                   </div>
+                  <div className="edit-form-row">
+                    <div className="form-group gender-group">
+                      <label>성별</label>
+                      <div className="radio-buttons">
+                        <label>
+                          <input
+                            type="radio"
+                            value="male"
+                            checked={editForm.gender === 'male'}
+                            onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
+                            required
+                          />
+                          남
+                        </label>
+                        <label>
+                          <input
+                            type="radio"
+                            value="female"
+                            checked={editForm.gender === 'female'}
+                            onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
+                            required
+                          />
+                          여
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                   <div className="edit-actions">
                     <button type="submit" className="action-btn save-btn">저장</button>
                     <button type="button" onClick={handleCancelEdit} className="action-btn cancel-btn">취소</button>
@@ -180,7 +210,7 @@ const ManageMembers = () => {
                   <div className="member-info">
                     <div className="member-basic">
                       <span className="member-name">{member.name}</span>
-                      <span className="member-dob">생년월일: {member.dob}</span>
+                      <span className="member-dob">({member.gender === 'male' ? '남' : '여'}, {member.dob})</span>
                     </div>
                     <div className="member-stats">
                       {(() => {
