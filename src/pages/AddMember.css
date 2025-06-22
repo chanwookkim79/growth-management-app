@@ -75,4 +75,29 @@
     border-radius: 0;
     box-shadow: none;
   }
+}
+
+.add-member-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.gender-select {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.gender-select label {
+  margin-right: 10px;
+}
+
+.gender-select input[type="radio"] {
+  margin-right: 5px;
+}
+
+.add-member-container input[type="text"],
+.add-member-container input[type="date"],
+.add-member-container input[type="number"] {
+  /* ... existing code ... */
 } 

@@ -7,24 +7,25 @@ import './AddMember.css';
 const AddMember = () => {
   const { currentUser } = useContext(AuthContext);
   const [name, setName] = useState('');
-  const [dob, setDob] = useState('');
-  const [height, setHeight] = useState('');
-  const [weight, setWeight] = useState('');
+  const [birthdate, setBirthdate] = useState('');
+  const [gender, setGender] = useState('');
+  const [initialHeight, setInitialHeight] = useState('');
+  const [initialWeight, setInitialWeight] = useState('');
   const [bmi, setBmi] = useState(null);
 
   useEffect(() => {
-    if (height > 0 && weight > 0) {
-      const heightInMeters = height / 100;
-      const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+    if (initialHeight > 0 && initialWeight > 0) {
+      const heightInMeters = initialHeight / 100;
+      const bmiValue = (initialWeight / (heightInMeters * heightInMeters)).toFixed(2);
       setBmi(bmiValue);
     } else {
       setBmi(null);
     }
-  }, [height, weight]);
+  }, [initialHeight, initialWeight]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !dob || !height || !weight) {
+    if (!name || !birthdate || !initialHeight || !initialWeight) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -36,10 +37,11 @@ const AddMember = () => {
       const docRef = await addDoc(collection(db, "members"), {
         userId: currentUser.uid,
         name,
-        dob,
+        birthdate,
+        gender,
         initialData: {
-          height: Number(height),
-          weight: Number(weight),
+          height: Number(initialHeight),
+          weight: Number(initialWeight),
           bmi: Number(bmi),
           date: new Date()
         },
@@ -49,9 +51,9 @@ const AddMember = () => {
       alert(`${name}님의 정보가 성공적으로 등록되었습니다.`);
       // 폼 초기화
       setName('');
-      setDob('');
-      setHeight('');
-      setWeight('');
+      setBirthdate('');
+      setInitialHeight('');
+      setInitialWeight('');
     } catch (error) {
       console.error("Error adding document: ", error);
       alert('데이터 저장에 실패했습니다. 다시 시도해주세요.');
@@ -70,35 +72,46 @@ const AddMember = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력하세요"
+            required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="dob">생년월일</label>
+          <label htmlFor="birthdate">생년월일</label>
           <input
             type="date"
-            id="dob"
-            value={dob}
-            onChange={(e) => setDob(e.target.value)}
+            id="birthdate"
+            value={birthdate}
+            onChange={(e) => setBirthdate(e.target.value)}
+            required
+          />
+        </div>
+        <div className="gender-select">
+          <label>성별:</label>
+          <input type="radio" id="male" name="gender" value="male" onChange={(e) => setGender(e.target.value)} required />
+          <label htmlFor="male">남자</label>
+          <input type="radio" id="female" name="gender" value="female" onChange={(e) => setGender(e.target.value)} />
+          <label htmlFor="female">여자</label>
+        </div>
+        <div className="form-group">
+          <label htmlFor="initialHeight">초기 키 (cm)</label>
+          <input
+            type="number"
+            id="initialHeight"
+            value={initialHeight}
+            onChange={(e) => setInitialHeight(e.target.value)}
+            placeholder="초기 키를 숫자로 입력하세요"
+            required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="height">현재 키 (cm)</label>
+          <label htmlFor="initialWeight">초기 몸무게 (kg)</label>
           <input
             type="number"
-            id="height"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            placeholder="키를 숫자로 입력하세요"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="weight">현재 몸무게 (kg)</label>
-          <input
-            type="number"
-            id="weight"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            placeholder="몸무게를 숫자로 입력하세요"
+            id="initialWeight"
+            value={initialWeight}
+            onChange={(e) => setInitialWeight(e.target.value)}
+            placeholder="초기 몸무게를 숫자로 입력하세요"
+            required
           />
         </div>
         {bmi && (
