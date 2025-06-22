@@ -1,17 +1,21 @@
 import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { db } from '../firebase/config';
 import { collection, getDocs, doc, updateDoc, arrayUnion, query, where } from 'firebase/firestore';
 import './AddData.css'; // AddData.css를 import 합니다.
+import '../styles/form-styles.css';
 
 const AddData = () => {
   const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [bmi, setBmi] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 컴포넌트가 처음 렌더링될 때 Firestore에서 회원 목록을 가져옵니다.
   useEffect(() => {
@@ -35,22 +39,30 @@ const AddData = () => {
     fetchMembers();
   }, [currentUser]);
 
-  // 키 또는 몸무게가 변경될 때마다 BMI를 다시 계산합니다.
+  // 키와 몸무게가 변경될 때마다 BMI를 다시 계산합니다.
   useEffect(() => {
     if (height > 0 && weight > 0) {
       const heightInMeters = height / 100;
-      const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
-      setBmi(bmiValue);
+      const calculatedBmi = weight / (heightInMeters * heightInMeters);
+      setBmi(calculatedBmi);
     } else {
       setBmi(null);
     }
   }, [height, weight]);
 
-  // 폼 제출 시 실행될 함수
+  const handleFormReset = () => {
+    // Reset logic for the form
+    setSelectedMember('');
+    setHeight('');
+    setWeight('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (!selectedMember || !height || !weight) {
       alert('회원을 선택하고 키와 몸무게를 모두 입력해주세요.');
+      setLoading(false);
       return;
     }
     try {
@@ -63,14 +75,22 @@ const AddData = () => {
           date: new Date()
         })
       });
-      alert('데이터가 성공적으로 추가되었습니다.');
-      // 폼 초기화
-      setSelectedMember('');
-      setHeight('');
-      setWeight('');
+      setIsModalOpen(true);
     } catch (error) {
       console.error("Error updating document: ", error);
-      alert('데이터 업데이트에 실패했습니다.');
+      alert('데이터 추가에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleModalResponse = (goToDashboard) => {
+    const lastSelectedMemberId = selectedMember; // Reset 전에 ID 저장
+    setIsModalOpen(false);
+    handleFormReset();
+    if (goToDashboard) {
+      // state를 통해 대시보드로 회원 ID 전달
+      navigate('/dashboard', { state: { memberId: lastSelectedMemberId } });
     }
   };
 
@@ -97,10 +117,11 @@ const AddData = () => {
           <input
             type="number"
             id="height"
+            name="height"
+            className="form-input"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
             placeholder="키를 숫자로 입력하세요"
-            className="form-control"
           />
         </div>
         <div className="form-group">
@@ -108,24 +129,37 @@ const AddData = () => {
           <input
             type="number"
             id="weight"
+            name="weight"
+            className="form-input"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             placeholder="몸무게를 숫자로 입력하세요"
-            className="form-control"
           />
         </div>
-        {bmi && (
-          <div className="form-group">
-            <label>BMI</label>
-            <p className="bmi-result">{bmi}</p>
+        {bmi !== null && (
+          <div className="bmi-display">
+            <p>BMI: {bmi.toFixed(1)}</p>
           </div>
         )}
         <div className="button-container">
-          <button type="submit" disabled={loading}>
-            {loading ? '추가 중...' : '데이터 추가'}
+          <button type="submit" className="submit-btn" disabled={!selectedMember || !height || !weight || loading}>
+            {loading ? '입력 중...' : '데이터 입력'}
           </button>
         </div>
       </form>
+      
+      {isModalOpen && (
+        <div className="modal-backdrop">
+          <div className="modal-content">
+            <h3>데이터 입력 완료</h3>
+            <p>모니터링 화면으로 이동하시겠습니까?</p>
+            <div className="modal-actions">
+              <button onClick={() => handleModalResponse(true)} className="action-btn save-btn">Yes</button>
+              <button onClick={() => handleModalResponse(false)} className="action-btn cancel-btn">No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

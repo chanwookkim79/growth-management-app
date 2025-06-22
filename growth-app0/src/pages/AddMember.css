@@ -62,7 +62,7 @@
 /* 반응형 스타일 */
 @media (max-width: 768px) {
   .add-member-container {
-    margin: 1rem 0;
+    margin: 1rem auto;
     padding: 1.5rem;
     border-radius: 0;
     box-shadow: none;

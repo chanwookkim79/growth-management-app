@@ -75,6 +75,10 @@
   cursor: pointer;
 }
 
+.app-version {
+  display: none; /* Hide on desktop */
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .navbar {
@@ -86,7 +90,9 @@
     top: 60px; /* Adjust based on navbar height */
     left: -100%;
     width: 70%;
-    height: calc(100vh - 60px); /* Full height minus navbar height */
+    max-width: 280px; /* 최대 너비 추가 */
+    max-height: calc(100vh - 60px); /* 화면 높이를 넘지 않도록 최대 높이 설정 */
+    overflow-y: auto; /* 내용이 많아지면 스크롤 */
     background-color: white;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     padding: 20px;
@@ -120,6 +126,16 @@
   .logout-btn {
     width: 100%;
     text-align: center;
+  }
+
+  .app-version {
+    display: block; /* Show in mobile menu */
+    width: 100%;
+    text-align: center;
+    margin-top: auto; /* Push to the bottom */
+    padding-top: 20px;
+    font-size: 0.8em;
+    color: #999;
   }
 
   .hamburger {

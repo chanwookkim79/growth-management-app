@@ -1,7 +1,8 @@
-.dashboard {
+.dashboard-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .dashboard-title {
@@ -60,12 +61,21 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
+  .dashboard-container {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
   .dashboard-title {
     font-size: 1.5rem;
   }
   
   .monitoring-section, .records-section {
     padding: 1rem;
+  }
+
+  .table-wrapper {
+    /* margin: 0.5rem auto; */
   }
 }
 
@@ -91,7 +101,15 @@
 }
 
 .table-wrapper {
-  margin-top: 40px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1600px;
+  overflow-x: auto;
+}
+
+.table-wrapper h3 {
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .table-container {
@@ -110,11 +128,41 @@
 .growth-table th,
 .growth-table td {
   border: 1px solid #ddd;
-  padding: 12px 15px;
+  padding: 10px 8px;
   text-align: center;
 }
 
 .growth-table thead th {
   background-color: #f7f7f7;
   font-weight: bold;
+  }
+
+  .member-selector-container {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.member-selector-container label {
+  font-weight: bold;
+  }
+
+  .member-selector-container select {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 200px;
+  background-color: white;
+  }
+
+.pivoted-table-container {
+  margin: 1rem auto;
+  max-width: 95%;
+  }
+  
+.pivoted-table-container h3 {
+  text-align: center;
+  margin-bottom: 1rem;
 } 

@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { db } from '../firebase/config';
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"; 
 import './AddMember.css';
 import { useNavigate } from 'react-router-dom';
+import '../styles/form-styles.css';
 
 const AddMember = () => {
   const { currentUser } = useContext(AuthContext);
@@ -53,7 +54,7 @@ const AddMember = () => {
   return (
     <div className="add-member-container">
       <form onSubmit={handleSubmit} className="add-member-form">
-        <h2>회원 등록</h2>
+        <h2>프로필 추가</h2>
         <div className="form-group">
           <label htmlFor="name">이름</label>
           <input
@@ -61,7 +62,7 @@ const AddMember = () => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="form-control"
+            className="form-input"
             required
           />
         </div>
@@ -72,7 +73,7 @@ const AddMember = () => {
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
-            className="form-control"
+            className="form-input"
             required
           />
         </div>
@@ -108,7 +109,7 @@ const AddMember = () => {
             type="number"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            className="form-control"
+            className="form-input"
             required
           />
         </div>
@@ -119,12 +120,12 @@ const AddMember = () => {
             type="number"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
-            className="form-control"
+            className="form-input"
             required
           />
         </div>
-        <button type="submit" disabled={loading}>
-          {loading ? '등록 중...' : '회원 등록'}
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? '등록 중...' : '등록'}
         </button>
       </form>
     </div>

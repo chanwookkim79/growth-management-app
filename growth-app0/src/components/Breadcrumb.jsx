@@ -1,20 +1,18 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import './Breadcrumb.css';
+import { navLinks } from '../constants/navigation';
 
 const Breadcrumb = () => {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter(x => x);
 
-  const nameMapping = {
-    'add-member': '회원 등록',
-    'add-data': '데이터 입력',
-    'manage-members': '회원 관리',
-    'dashboard': '성장 모니터링',
-    'growth-prediction': '성장 예측',
-    'data-backup': '데이터 백업',
-    'manage-all-members': '전체 회원 관리'
-  };
+  const nameMapping = navLinks.reduce((acc, link) => {
+    // '/add-member' -> 'add-member'
+    const key = link.path.substring(1); 
+    acc[key] = link.name;
+    return acc;
+  }, {});
   
   const isHomePage = location.pathname === '/';
 

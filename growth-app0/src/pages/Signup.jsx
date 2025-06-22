@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { auth } from '../firebase/config';
+import { auth, db } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './AuthForm.css'; // 공통 스타일 사용
 
@@ -14,11 +15,20 @@ const Signup = () => {
     e.preventDefault();
     setError(null);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Firestore의 'users' 컬렉션에 사용자 정보 저장
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        createdAt: new Date(),
+      });
+
       // 회원가입 성공 시 홈으로 이동
       navigate('/');
     } catch (err) {
-      setError(err.message);
+      setError('회원가입에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.');
+      console.error(err);
     }
   };
 

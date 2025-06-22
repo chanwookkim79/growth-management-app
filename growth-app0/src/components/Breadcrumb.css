@@ -5,9 +5,9 @@
   margin-bottom: 20px;
 }
 
-.breadcrumb-list {
+.breadcrumb {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 0;
   margin: 0;
   list-style: none;

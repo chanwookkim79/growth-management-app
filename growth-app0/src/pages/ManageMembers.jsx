@@ -2,20 +2,18 @@ import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { db } from '../firebase/config';
 import { collection, query, where, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { format, differenceInMonths, parseISO } from 'date-fns';
 import './ManageMembers.css';
 
 const ManageMembers = () => {
   const { currentUser } = useContext(AuthContext);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingMember, setEditingMember] = useState(null);
-  const [editForm, setEditForm] = useState({
-    name: '',
-    dob: '',
-    height: '',
-    weight: '',
-    gender: ''
-  });
+  
+  // 수정 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [editForm, setEditForm] = useState({ name: '', dob: '', gender: '' });
 
   const fetchMembers = async () => {
     if (!currentUser) return;
@@ -24,7 +22,7 @@ const ManageMembers = () => {
       const q = query(collection(db, "members"), where("userId", "==", currentUser.uid));
       const querySnapshot = await getDocs(q);
       const membersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setMembers(membersList);
+      setMembers(membersList.sort((a, b) => a.name.localeCompare(b.name))); // 이름순으로 정렬
     } catch (error) {
       console.error("Error fetching members: ", error);
       alert('회원 목록을 불러오는 데 실패했습니다.');
@@ -33,15 +31,13 @@ const ManageMembers = () => {
     }
   };
 
-  useEffect(() => {
-    fetchMembers();
-  }, [currentUser]);
+  useEffect(() => { fetchMembers(); }, [currentUser]);
 
   const handleDelete = async (memberId, memberName) => {
-    if (window.confirm(`'${memberName}' 회원을 정말로 삭제하시겠습니까? 모든 관련 데이터가 영구적으로 삭제됩니다.`)) {
+    if (window.confirm(`'${memberName}' 회원을 정말로 삭제하시겠습니까?`)) {
       try {
         await deleteDoc(doc(db, "members", memberId));
-        alert('회원이 성공적으로 삭제되었습니다.');
+        alert('회원이 삭제되었습니다.');
         fetchMembers();
       } catch (error) {
         console.error("Error deleting document: ", error);
@@ -49,196 +45,224 @@ const ManageMembers = () => {
       }
     }
   };
-
-  const handleEdit = (member) => {
-    setEditingMember(member);
-    setEditForm({
-      name: member.name,
-      dob: member.dob,
-      height: member.initialData.height.toString(),
-      weight: member.initialData.weight.toString(),
-      gender: member.gender || ''
-    });
+  
+  // 수정 버튼 클릭 시 모달 열기
+  const handleEditClick = (member) => {
+    setSelectedMember(member);
+    setEditForm({ name: member.name, dob: member.dob, gender: member.gender });
+    setIsModalOpen(true);
+  };
+  
+  // 모달 닫기
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedMember(null);
   };
 
+  // 정보 수정 제출
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    if (!editForm.name || !editForm.dob || !editForm.height || !editForm.weight || !editForm.gender) {
-      alert('모든 필드를 입력해주세요.');
-      return;
-    }
-
     try {
-      const heightInMeters = Number(editForm.height) / 100;
-      const bmiValue = (Number(editForm.weight) / (heightInMeters * heightInMeters)).toFixed(2);
-      
-      const memberDocRef = doc(db, "members", editingMember.id);
+      const memberDocRef = doc(db, "members", selectedMember.id);
       await updateDoc(memberDocRef, {
         name: editForm.name,
         dob: editForm.dob,
         gender: editForm.gender,
-        initialData: {
-          height: Number(editForm.height),
-          weight: Number(editForm.weight),
-          bmi: Number(bmiValue),
-          date: editingMember.initialData.date
-        }
       });
-
-      alert('회원 정보가 성공적으로 수정되었습니다.');
-      setEditingMember(null);
-      setEditForm({ name: '', dob: '', height: '', weight: '', gender: '' });
+      alert('회원 정보가 수정되었습니다.');
+      closeModal();
       fetchMembers();
     } catch (error) {
       console.error("Error updating document: ", error);
-      alert('회원 정보 수정에 실패했습니다.');
+      alert('정보 수정에 실패했습니다.');
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingMember(null);
-    setEditForm({ name: '', dob: '', height: '', weight: '', gender: '' });
+  // 성장 기록 데이터 가공 (변화량 계산)
+  const getProcessedGrowthData = (member) => {
+    if (!member) return [];
+    const allData = [...[member.initialData], ...(member.growthData || [])]
+      .sort((a, b) => a.date.toMillis() - b.date.toMillis());
+
+    return allData.map((data, index) => {
+      let heightChange = '-';
+      let weightChange = '-';
+      if (index > 0) {
+        heightChange = (data.height - allData[index - 1].height).toFixed(1);
+        weightChange = (data.weight - allData[index - 1].weight).toFixed(1);
+      }
+      return { ...data, heightChange, weightChange };
+    });
   };
 
-  const getMemberStats = (member) => {
-    const allData = [
-      member.initialData,
-      ...(member.growthData || [])
-    ].sort((a, b) => a.date.toMillis() - b.date.toMillis());
+  // 인라인 기록 삭제
+  const handleRecordDelete = async (recordToDelete) => {
+    if (!window.confirm(`${format(recordToDelete.date.toDate(), 'yyyy-MM-dd')}일자 기록을 삭제하시겠습니까?`)) {
+      return;
+    }
     
-    if (allData.length === 0) return null;
-    
-    const latest = allData[allData.length - 1];
-    const first = allData[0];
-    
-    return {
-      totalRecords: allData.length,
-      heightChange: (latest.height - first.height).toFixed(1),
-      weightChange: (latest.weight - first.weight).toFixed(1),
-      latestDate: new Date(latest.date.seconds * 1000).toLocaleDateString()
-    };
+    try {
+      const updatedGrowthData = selectedMember.growthData.filter(
+        record => record.date.toMillis() !== recordToDelete.date.toMillis()
+      );
+      
+      const memberDocRef = doc(db, "members", selectedMember.id);
+      await updateDoc(memberDocRef, {
+        growthData: updatedGrowthData
+      });
+
+      // Update the state locally to reflect changes immediately
+      const updatedMember = { ...selectedMember, growthData: updatedGrowthData };
+      setSelectedMember(updatedMember);
+      
+      // Update the main members list as well
+      setMembers(prevMembers => prevMembers.map(m => m.id === updatedMember.id ? updatedMember : m));
+
+      alert('기록이 삭제되었습니다.');
+    } catch (error) {
+      console.error("Error deleting record: ", error);
+      alert('기록 삭제에 실패했습니다.');
+    }
   };
 
-  if (loading) {
-    return <div>회원 목록을 불러오는 중...</div>;
-  }
+  // 변화량 렌더링 함수
+  const renderChange = (value, type) => {
+    if (value === '-' || value === null || isNaN(parseFloat(value))) return <span>-</span>;
+    const num = parseFloat(value);
+    if (num === 0) return <span>-</span>;
+
+    const isIncrease = num > 0;
+    const symbol = isIncrease ? '▲' : '▼';
+    
+    let className = '';
+    if (type === 'height') {
+      // 키: 증가는 녹색(up), 감소는 빨간색(down)
+      className = isIncrease ? 'change-up' : 'change-down';
+    } else if (type === 'weight') {
+      // 몸무게: 증가는 빨간색(down), 감소는 녹색(up)
+      className = isIncrease ? 'change-down' : 'change-up';
+    }
+
+    return <span className={className}>{symbol} {Math.abs(num)}</span>;
+  };
+
+  if (loading) return <div>회원 목록을 불러오는 중...</div>;
 
   return (
     <div className="manage-members-container">
+      <h2>프로필 관리</h2>
+      {/* 회원 정보 수정 모달 */}
+      {isModalOpen && selectedMember && (
+        <div className="modal-backdrop" onClick={closeModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h2>{selectedMember.name}님 정보 수정</h2>
+            
+            <form onSubmit={handleEditSubmit} className="modal-form-container">
+              <div className="modal-section">
+                
+                <div className="edit-form-grid">
+                  <div className="form-group">
+                    <label>이름</label>
+                    <input type="text" value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>생년월일</label>
+                    <input type="date" value={editForm.dob} onChange={(e) => setEditForm({...editForm, dob: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>성별</label>
+                    <div className="radio-buttons">
+                      <label><input type="radio" value="male" checked={editForm.gender === 'male'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 남</label>
+                      <label><input type="radio" value="female" checked={editForm.gender === 'female'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 여</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-section">
+                <h3>전체 성장 기록</h3>
+                <div className="growth-history-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>측정일</th>
+                        <th>키(cm) (변화)</th>
+                        <th>몸무게(kg) (변화)</th>
+                        <th>BMI</th>
+                        <th>기록 관리</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getProcessedGrowthData(selectedMember).map((record, index) => (
+                        <tr key={record.date.toMillis()}>
+                          <td>{format(record.date.toDate(), 'yyyy-MM-dd')}</td>
+                          <td>{record.height} cm ({renderChange(record.heightChange, 'height')})</td>
+                          <td>{record.weight} kg ({renderChange(record.weightChange, 'weight')})</td>
+                          <td>{parseFloat(record.bmi).toFixed(1)}</td>
+                          <td className="actions-cell">
+                            {record.date.toMillis() !== selectedMember.initialData.date.toMillis() ? (
+                              <button type="button" onClick={() => handleRecordDelete(record)} className="inline-btn delete-btn">삭제</button>
+                            ) : (
+                              <span>-</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="modal-actions-bottom">
+                <button type="submit" className="action-btn save-btn">저장</button>
+                <button type="button" onClick={closeModal} className="action-btn cancel-btn">취소</button>
+              </div>
+            </form>
+            <button onClick={closeModal} className="modal-close-btn">&times;</button>
+          </div>
+        </div>
+      )}
+
+      {/* 회원 목록 테이블 */}
       {members.length > 0 ? (
-        <ul className="members-list">
-          {members.map(member => (
-            <li key={member.id} className="member-item">
-              {editingMember?.id === member.id ? (
-                // 수정 모드
-                <form onSubmit={handleEditSubmit} className="edit-form">
-                  <div className="edit-form-row">
-                    <div className="form-group">
-                      <label>이름</label>
-                      <input
-                        type="text"
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>생년월일</label>
-                      <input
-                        type="date"
-                        value={editForm.dob}
-                        onChange={(e) => setEditForm({...editForm, dob: e.target.value})}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="edit-form-row">
-                    <div className="form-group">
-                      <label>키 (cm)</label>
-                      <input
-                        type="number"
-                        value={editForm.height}
-                        onChange={(e) => setEditForm({...editForm, height: e.target.value})}
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>몸무게 (kg)</label>
-                      <input
-                        type="number"
-                        value={editForm.weight}
-                        onChange={(e) => setEditForm({...editForm, weight: e.target.value})}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="edit-form-row">
-                    <div className="form-group gender-group">
-                      <label>성별</label>
-                      <div className="radio-buttons">
-                        <label>
-                          <input
-                            type="radio"
-                            value="male"
-                            checked={editForm.gender === 'male'}
-                            onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
-                            required
-                          />
-                          남
-                        </label>
-                        <label>
-                          <input
-                            type="radio"
-                            value="female"
-                            checked={editForm.gender === 'female'}
-                            onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
-                            required
-                          />
-                          여
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="edit-actions">
-                    <button type="submit" className="action-btn save-btn">저장</button>
-                    <button type="button" onClick={handleCancelEdit} className="action-btn cancel-btn">취소</button>
-                  </div>
-                </form>
-              ) : (
-                // 일반 모드
-                <>
-                  <div className="member-info">
-                    <div className="member-basic">
-                      <span className="member-name">{member.name}</span>
-                      <span className="member-dob">({member.gender === 'male' ? '남' : '여'}, {member.dob})</span>
-                    </div>
-                    <div className="member-stats">
-                      {(() => {
-                        const stats = getMemberStats(member);
-                        return stats ? (
-                          <>
-                            <span>총 기록: {stats.totalRecords}회</span>
-                            <span>키 변화: {stats.heightChange}cm</span>
-                            <span>몸무게 변화: {stats.weightChange}kg</span>
-                            <span>최근 기록: {stats.latestDate}</span>
-                          </>
-                        ) : (
-                          <span>기록 없음</span>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                  <div className="member-actions">
-                    <button onClick={() => handleEdit(member)} className="action-btn edit-btn">수정</button>
+        <div className="table-responsive">
+          <table className="members-table">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>생년월일</th>
+                <th>개월 수 (나이)</th>
+                <th>성별</th>
+                <th>등록일</th>
+                <th>비고</th>
+              </tr>
+            </thead>
+            <tbody>
+              {members.map(member => (
+                <tr key={member.id}>
+                  <td>{member.name}</td>
+                  <td>{member.dob}</td>
+                  <td>{`${differenceInMonths(new Date(), parseISO(member.dob))}개월`}</td>
+                  <td>{member.gender === 'male' ? '남' : '여'}</td>
+                  <td>
+                    {member.createdAt 
+                      ? format(member.createdAt.toDate(), 'yyyy-MM-dd') 
+                      : (member.initialData?.date 
+                          ? format(member.initialData.date.toDate(), 'yyyy-MM-dd')
+                          : 'N/A')
+                    }
+                  </td>
+                  <td className="actions-cell">
+                    <button onClick={() => handleEditClick(member)} className="action-btn edit-btn">수정</button>
                     <button onClick={() => handleDelete(member.id, member.name)} className="action-btn delete-btn">삭제</button>
-                  </div>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <p>등록된 회원이 없습니다. '회원 등록' 메뉴에서 새로운 회원을 추가하세요.</p>
+        <p className="no-members-message">등록된 회원이 없습니다.</p>
       )}
     </div>
   );

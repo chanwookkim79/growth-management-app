@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { db } from '../firebase/config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -36,6 +37,8 @@ ChartJS.register(
 
 const Dashboard = () => {
   const { currentUser } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
   const [chartData, setChartData] = useState(null);
@@ -51,6 +54,17 @@ const Dashboard = () => {
         const querySnapshot = await getDocs(q);
         const membersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setMembers(membersList);
+        
+        // AddData 페이지에서 전달받은 memberId가 있는지 확인
+        const memberIdFromState = location.state?.memberId;
+        if (memberIdFromState) {
+          const memberToSelect = membersList.find(m => m.id === memberIdFromState);
+          if (memberToSelect) {
+            setSelectedMember(memberToSelect);
+          }
+          // state를 초기화하여 새로고침 시 재선택 방지
+          navigate(location.pathname, { replace: true });
+        }
       } catch (error) {
         console.error("Error fetching members: ", error);
       } finally {
@@ -91,7 +105,7 @@ const Dashboard = () => {
       dates.push(format(new Date(data.date.seconds * 1000), 'yyyy-MM-dd'));
       heightValues.push(data.height);
       weightValues.push(data.weight);
-      bmiValues.push(data.bmi);
+      bmiValues.push(parseFloat(data.bmi).toFixed(1));
 
       if (index === 0) {
         heightChanges.push('-');
@@ -186,13 +200,22 @@ const Dashboard = () => {
     return <span>-</span>;
   };
 
+  const getBmiEvaluation = (bmi) => {
+    if (bmi < 18.5) return <span style={{ color: '#f39c12' }}>저체중</span>;
+    if (bmi < 23) return <span style={{ color: '#2ecc71' }}>정상</span>;
+    if (bmi < 25) return <span style={{ color: '#e67e22' }}>과체중</span>;
+    if (bmi < 30) return <span style={{ color: '#d35400' }}>경도 비만</span>;
+    if (bmi >= 30) return <span style={{ color: '#c0392b' }}>중등도 비만</span>;
+    return '';
+  };
+
   if (loading) return <p>회원 목록을 불러오는 중...</p>;
 
   return (
     <div className="dashboard-container">
       <div className="member-selector-container">
         <label htmlFor="member-select">회원 선택: </label>
-        <select id="member-select" onChange={handleMemberChange} defaultValue="">
+        <select id="member-select" onChange={handleMemberChange} value={selectedMember ? selectedMember.id : ''}>
           <option value="" disabled>-- 회원을 선택하세요 --</option>
           {members.map(m => (
             <option key={m.id} value={m.id}>{m.name}</option>
@@ -206,7 +229,6 @@ const Dashboard = () => {
             {chartData && <Bar options={chartOptions} data={chartData} />}
           </div>
           <div className="table-wrapper">
-            <h3>상세 기록</h3>
             {pivotedTableData ? (
               <div className="table-container">
                 <table className="growth-table">
@@ -222,7 +244,15 @@ const Dashboard = () => {
                         <td>{metric.label}</td>
                         {metric.values.map((value, index) => (
                           <td key={index}>
-                            {metric.label.includes('변화') ? renderChange(value) : value}
+                            {metric.label.includes('변화') ? (
+                              renderChange(value)
+                            ) : metric.label === 'BMI' ? (
+                              <>
+                                {value} ({getBmiEvaluation(value)})
+                              </>
+                            ) : (
+                              value
+                            )}
                           </td>
                         ))}
                       </tr>
