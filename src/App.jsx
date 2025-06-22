@@ -39,6 +39,7 @@ const AppContent = () => {
   return (
     <>
       <Navbar />
+      <div style={{ textAlign: 'center', padding: '5px', backgroundColor: '#fff8e1' }}>v1.1</div>
       {!authPaths.includes(location.pathname) && <Breadcrumb />}
       <main className="main-content">
         <Routes>
