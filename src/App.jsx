@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 
 // Context and Components
@@ -28,13 +28,18 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-function App() {
+// App 컴포넌트 내에서 라우팅 관련 로직을 처리하는 부분
+const AppContent = () => {
   const { currentUser } = useContext(AuthContext);
+  const location = useLocation();
+
+  // 로그인과 회원가입 페이지 경로
+  const authPaths = ['/login', '/signup'];
 
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
-      <Breadcrumb />
+      {!authPaths.includes(location.pathname) && <Breadcrumb />}
       <main className="main-content">
         <Routes>
           <Route path="/" element={currentUser ? <Home /> : <Navigate to="/login" />} />
@@ -44,62 +49,42 @@ function App() {
           {/* 아래 페이지들은 로그인이 필요한 보호된 라우트입니다. */}
           <Route 
             path="/add-member" 
-            element={
-              <ProtectedRoute>
-                <AddMember />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><AddMember /></ProtectedRoute>} 
           />
           <Route 
             path="/add-data" 
-            element={
-              <ProtectedRoute>
-                <AddData />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><AddData /></ProtectedRoute>} 
           />
           <Route 
             path="/manage-members"
-            element={
-              <ProtectedRoute>
-                <ManageMembers />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><ManageMembers /></ProtectedRoute>}
           />
           <Route 
             path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
           />
           <Route 
             path="/growth-prediction" 
-            element={
-              <ProtectedRoute>
-                <GrowthPrediction />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><GrowthPrediction /></ProtectedRoute>}
           />
           <Route 
             path="/data-backup" 
-            element={
-              <ProtectedRoute>
-                <DataBackup />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><DataBackup /></ProtectedRoute>}
           />
           <Route 
             path="/manage-all-members" 
-            element={
-              <ProtectedRoute>
-                <ManageAllMembers />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><ManageAllMembers /></ProtectedRoute>}
           />
         </Routes>
       </main>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
