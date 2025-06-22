@@ -95,6 +95,7 @@
     flex-direction: column;
     gap: 25px;
     align-items: flex-start;
+    z-index: 1100; /* Ensure menu is above all other content */
   }
 
   .navbar-links.active {
