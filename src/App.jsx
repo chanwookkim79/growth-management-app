@@ -4,6 +4,7 @@ import { useContext } from 'react';
 // Context and Components
 import { AuthContext } from './context/AuthContext.jsx';
 import Navbar from './components/Navbar.jsx';
+import Breadcrumb from './components/Breadcrumb.jsx';
 
 // Page Components
 import Home from './pages/Home.jsx';
@@ -33,6 +34,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
+      <Breadcrumb />
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />

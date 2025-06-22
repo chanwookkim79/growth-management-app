@@ -61,8 +61,7 @@ const AddMember = () => {
   };
 
   return (
-    <div className="form-container">
-      <h2>회원 정보 등록</h2>
+    <div className="add-member-container">
       <form onSubmit={handleSubmit} className="member-form">
         <div className="form-group">
           <label htmlFor="name">이름</label>

@@ -190,7 +190,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h2>성장 모니터링</h2>
       <div className="member-selector-container">
         <label htmlFor="member-select">회원 선택: </label>
         <select id="member-select" onChange={handleMemberChange} defaultValue="">

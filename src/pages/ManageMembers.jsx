@@ -117,12 +117,11 @@ const ManageMembers = () => {
   };
 
   if (loading) {
-    return <p>회원 목록을 불러오는 중...</p>;
+    return <div>회원 목록을 불러오는 중...</div>;
   }
 
   return (
-    <div className="manage-container">
-      <h2>회원 관리</h2>
+    <div className="manage-members-container">
       {members.length > 0 ? (
         <ul className="members-list">
           {members.map(member => (

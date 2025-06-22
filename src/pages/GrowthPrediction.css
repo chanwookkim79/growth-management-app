@@ -254,4 +254,71 @@
   .chart-container {
     height: 250px;
   }
+}
+
+.growth-prediction-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.growth-prediction-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.prediction-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.prediction-controls select,
+.prediction-controls button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.prediction-controls button {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.prediction-controls button:hover {
+  background-color: #0056b3;
+}
+
+.prediction-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.prediction-result {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.prediction-result h3 {
+  color: #007bff;
+  margin-bottom: 15px;
+}
+
+.prediction-result p {
+  font-size: 18px;
+  line-height: 1.6;
 } 

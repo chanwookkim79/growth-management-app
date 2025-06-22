@@ -198,31 +198,11 @@ const DataBackup = () => {
   if (loading) return <p>데이터를 불러오는 중...</p>;
 
   return (
-    <div className="backup-container">
-      <h2>데이터 백업 및 복원</h2>
-      
-      <div className="backup-info">
-        <p>현재 등록된 회원: <strong>{members.length}명</strong></p>
-        <p>총 기록 수: <strong>
-          {members.reduce((total, member) => 
-            total + 1 + (member.growthData ? member.growthData.length : 0), 0
-          )}개
-        </strong></p>
-      </div>
-
+    <div className="data-backup-container">
       <div className="backup-actions">
-        <div className="action-card">
-          <h3>데이터 백업</h3>
-          <p>모든 회원 정보와 성장 데이터를 JSON 파일로 백업합니다.</p>
-          <button 
-            onClick={handleBackup} 
-            className="backup-btn"
-            disabled={members.length === 0}
-          >
-            백업 다운로드
-          </button>
-          {backupStatus && <p className="status-message">{backupStatus}</p>}
-        </div>
+        <button onClick={handleBackup} disabled={loading}>
+          {loading ? '백업 진행 중...' : '전체 데이터 백업'}
+        </button>
 
         <div className="action-card">
           <h3>데이터 복원</h3>

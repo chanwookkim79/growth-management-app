@@ -80,7 +80,6 @@ const AddData = () => {
 
   return (
     <div className="add-data-container">
-      <h2>키/몸무게 추가 입력</h2>
       <form onSubmit={handleSubmit} className="data-form">
         <div className="form-group">
           <label htmlFor="member-select">회원 선택</label>
@@ -88,6 +87,7 @@ const AddData = () => {
             id="member-select" 
             value={selectedMember} 
             onChange={(e) => setSelectedMember(e.target.value)}
+            required
           >
             <option value="">-- 회원을 선택하세요 --</option>
             {members.map(member => (

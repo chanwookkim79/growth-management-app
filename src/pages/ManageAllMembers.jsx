@@ -35,7 +35,6 @@ const ManageAllMembers = () => {
 
   return (
     <div className="manage-members-container">
-      <h2>전체 회원 관리</h2>
       {allMembers.length > 0 ? (
         <ul className="members-list">
           {allMembers.map(member => (

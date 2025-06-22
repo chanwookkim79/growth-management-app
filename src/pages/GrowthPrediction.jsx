@@ -1,358 +1,190 @@
 import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext.jsx';
+import { AuthContext } from '../context/AuthContext';
 import { db } from '../firebase/config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import './GrowthPrediction.css';
+// 표준 성장 데이터 import
+import standardHeightMale from '../data/standard_height_male.json';
+import standardHeightFemale from '../data/standard_height_female.json';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 const GrowthPrediction = () => {
   const { currentUser } = useContext(AuthContext);
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
-  const [predictionData, setPredictionData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [predictionType, setPredictionType] = useState('height'); // 'height' or 'weight'
+  const [predictionPeriod, setPredictionPeriod] = useState(3);
+  const [predictionResult, setPredictionResult] = useState(null);
+  const [chartData, setChartData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  // 회원 목록 불러오기
   useEffect(() => {
     const fetchMembers = async () => {
       if (!currentUser) return;
-      try {
-        const q = query(collection(db, "members"), where("userId", "==", currentUser.uid));
-        const querySnapshot = await getDocs(q);
-        const membersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setMembers(membersList);
-      } catch (error) {
-        console.error("Error fetching members: ", error);
-      } finally {
-        setLoading(false);
-      }
+      const q = query(collection(db, "members"), where("userId", "==", currentUser.uid));
+      const querySnapshot = await getDocs(q);
+      setMembers(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     };
     fetchMembers();
   }, [currentUser]);
 
-  // 성장 예측 계산 함수
-  const calculatePrediction = (member) => {
-    const allData = [
-      member.initialData,
-      ...(member.growthData || [])
-    ].sort((a, b) => a.date.toMillis() - b.date.toMillis());
-
-    if (allData.length < 2) {
-      return null;
-    }
-
-    // 나이 계산 (생년월일 기준)
-    const birthDate = new Date(member.dob);
-    const currentDate = new Date();
-    const ageInYears = (currentDate - birthDate) / (1000 * 60 * 60 * 24 * 365.25);
-
-    // 데이터 포인트들을 나이와 함께 정리
-    const dataPoints = allData.map(data => {
-      const dataDate = new Date(data.date.seconds * 1000);
-      const ageAtData = (dataDate - birthDate) / (1000 * 60 * 60 * 24 * 365.25);
-      return {
-        age: ageAtData,
-        height: data.height,
-        weight: data.weight
-      };
-    });
-
-    // 선형 회귀를 사용한 예측
-    const predictValue = (dataPoints, targetAge, type) => {
-      if (dataPoints.length < 2) return null;
-
-      // 최근 3개 데이터 포인트 사용 (더 정확한 예측을 위해)
-      const recentData = dataPoints.slice(-3);
-      
-      // 선형 회귀 계산
-      const n = recentData.length;
-      const sumX = recentData.reduce((sum, point) => sum + point.age, 0);
-      const sumY = recentData.reduce((sum, point) => sum + point[type], 0);
-      const sumXY = recentData.reduce((sum, point) => sum + point.age * point[type], 0);
-      const sumXX = recentData.reduce((sum, point) => sum + point.age * point.age, 0);
-
-      const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-      const intercept = (sumY - slope * sumX) / n;
-
-      return slope * targetAge + intercept;
-    };
-
-    // 향후 1년간의 예측 데이터 생성
-    const predictions = [];
-    const currentAge = ageInYears;
-    
-    for (let i = 0; i <= 12; i++) {
-      const futureAge = currentAge + (i / 12); // 월별로 예측
-      const predictedHeight = predictValue(dataPoints, futureAge, 'height');
-      const predictedWeight = predictValue(dataPoints, futureAge, 'weight');
-      
-      if (predictedHeight && predictedWeight) {
-        predictions.push({
-          age: futureAge,
-          height: Math.max(0, predictedHeight), // 음수 방지
-          weight: Math.max(0, predictedWeight), // 음수 방지
-          date: new Date(birthDate.getTime() + futureAge * 365.25 * 24 * 60 * 60 * 1000)
-        });
-      }
-    }
-
-    return {
-      historical: dataPoints,
-      predictions: predictions,
-      currentAge: ageInYears
-    };
-  };
-
-  useEffect(() => {
+  const handlePredict = () => {
     if (!selectedMember) {
-      setPredictionData(null);
+      alert("먼저 회원을 선택해주세요.");
       return;
     }
 
-    const prediction = calculatePrediction(selectedMember);
-    setPredictionData(prediction);
-  }, [selectedMember, predictionType]);
+    const allData = [
+      selectedMember.initialData,
+      ...(selectedMember.growthData || [])
+    ].sort((a, b) => a.date.toMillis() - b.date.toMillis());
 
-  const handleMemberChange = (e) => {
-    const memberId = e.target.value;
-    const member = members.find(m => m.id === memberId);
-    setSelectedMember(member || null);
-  };
+    if (allData.length < 2) {
+      alert("예측을 위한 데이터가 부족합니다. (최소 2개 이상의 기록 필요)");
+      return;
+    }
 
-  const getChartData = () => {
-    if (!predictionData) return null;
+    setLoading(true);
 
-    const historicalLabels = predictionData.historical.map(d => 
-      `${d.age.toFixed(1)}세`
-    );
-    const predictionLabels = predictionData.predictions.map(d => 
-      `${d.age.toFixed(1)}세`
-    );
-
-    const historicalValues = predictionData.historical.map(d => 
-      predictionType === 'height' ? d.height : d.weight
-    );
-    const predictionValues = predictionData.predictions.map(d => 
-      predictionType === 'height' ? d.height : d.weight
-    );
-
-    return {
-      labels: [...historicalLabels, ...predictionLabels],
-      datasets: [
-        {
-          label: `실제 ${predictionType === 'height' ? '키' : '몸무게'}`,
-          data: [...historicalValues, ...Array(predictionValues.length).fill(null)],
-          borderColor: 'rgb(75, 192, 192)',
-          backgroundColor: 'rgba(75, 192, 192, 0.5)',
-          pointBackgroundColor: 'rgb(75, 192, 192)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        },
-        {
-          label: `예측 ${predictionType === 'height' ? '키' : '몸무게'}`,
-          data: [...Array(historicalValues.length).fill(null), ...predictionValues],
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          borderDash: [5, 5],
-          pointBackgroundColor: 'rgb(255, 99, 132)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgb(255, 99, 132)',
-          tension: 0.1
-        }
-      ]
+    // 나이 계산 (개월 수)
+    const birthDate = new Date(selectedMember.birthdate);
+    const getAgeInMonths = (date) => {
+      const today = new Date(date);
+      let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
+      months -= birthDate.getMonth();
+      months += today.getMonth();
+      return months <= 0 ? 0 : months;
     };
+
+    // 데이터 포인트 생성 (x: 나이(개월), y: 값)
+    const heightDataPoints = allData.map(d => ({ x: getAgeInMonths(d.date.toDate()), y: d.height }));
+    const weightDataPoints = allData.map(d => ({ x: getAgeInMonths(d.date.toDate()), y: d.weight }));
+    
+    // 선형 회귀 함수
+    const linearRegression = (data) => {
+        const n = data.length;
+        if (n === 0) return { slope: 0, intercept: 0 };
+        let sum_x = 0, sum_y = 0, sum_xy = 0, sum_xx = 0;
+        data.forEach(p => {
+            sum_x += p.x;
+            sum_y += p.y;
+            sum_xy += p.x * p.y;
+            sum_xx += p.x * p.x;
+        });
+        const slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
+        const intercept = (sum_y - slope * sum_x) / n;
+        return { slope, intercept };
+    };
+
+    const heightModel = linearRegression(heightDataPoints);
+    const weightModel = linearRegression(weightDataPoints);
+
+    const lastAge = getAgeInMonths(allData[allData.length - 1].date.toDate());
+    const futureAge = lastAge + predictionPeriod;
+
+    const predictedHeight = heightModel.slope * futureAge + heightModel.intercept;
+    const predictedWeight = weightModel.slope * futureAge + weightModel.intercept;
+
+    setPredictionResult({
+        predictedHeight: predictedHeight.toFixed(1),
+        predictedWeight: predictedWeight.toFixed(1),
+    });
+
+    // 표준 성장 데이터 선택
+    const standardHeightData = selectedMember.gender === 'male' ? standardHeightMale : standardHeightFemale;
+
+    // 차트 데이터 구성
+    setChartData({
+        labels: standardHeightData.map(d => d.age_months), // X축은 표준 데이터의 나이(개월)
+        datasets: [
+            {
+                label: `${selectedMember.name}님의 키`,
+                data: heightDataPoints, // {x, y} 객체의 배열
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                type: 'scatter',
+                pointRadius: 5,
+            },
+            {
+                label: '표준 키 (50th)',
+                data: standardHeightData.map(d => ({ x: d.age_months, y: d.height_cm })),
+                borderColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                type: 'line',
+                pointRadius: 0,
+                borderWidth: 2,
+            }
+        ]
+    });
+
+    setLoading(false);
   };
 
   const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: selectedMember ? 
-          `${selectedMember.name}님의 ${predictionType === 'height' ? '키' : '몸무게'} 예측` : 
-          '회원을 선택해주세요',
-        font: { size: 18 }
-      },
-      legend: { position: 'top' }
-    },
     scales: {
-      y: {
-        title: {
-          display: true,
-          text: predictionType === 'height' ? '키 (cm)' : '몸무게 (kg)'
+        x: {
+            type: 'linear',
+            position: 'bottom',
+            title: {
+                display: true,
+                text: '나이 (개월)'
+            }
+        },
+        y: {
+            title: {
+                display: true,
+                text: '키 (cm)'
+            }
         }
-      },
-      x: {
+    },
+    plugins: {
+        legend: {
+            position: 'top',
+        },
         title: {
-          display: true,
-          text: '나이 (세)'
+            display: true,
+            text: '성장 곡선 비교'
         }
-      }
     }
   };
 
-  const getPredictionSummary = () => {
-    if (!predictionData || predictionData.predictions.length === 0) return null;
-
-    const current = predictionData.predictions[0];
-    const oneYearLater = predictionData.predictions[predictionData.predictions.length - 1];
-    
-    const heightChange = predictionType === 'height' ? 
-      (oneYearLater.height - current.height).toFixed(1) : null;
-    const weightChange = predictionType === 'weight' ? 
-      (oneYearLater.weight - current.weight).toFixed(1) : null;
-
-    return {
-      current: current,
-      oneYearLater: oneYearLater,
-      change: heightChange || weightChange
-    };
-  };
-
-  if (loading) return <p>회원 목록을 불러오는 중...</p>;
-
   return (
-    <div className="prediction-container">
-      <h2>성장 예측</h2>
-      
-      <div className="controls">
-        <div className="member-selector">
-          <label htmlFor="member-select">회원 선택: </label>
-          <select id="member-select" onChange={handleMemberChange} defaultValue="">
-            <option value="" disabled>-- 회원을 선택하세요 --</option>
-            {members.map(m => (
-              <option key={m.id} value={m.id}>{m.name}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="prediction-type-selector">
-          <label>예측 유형: </label>
-          <div className="radio-group">
-            <label>
-              <input
-                type="radio"
-                value="height"
-                checked={predictionType === 'height'}
-                onChange={(e) => setPredictionType(e.target.value)}
-              />
-              키
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="weight"
-                checked={predictionType === 'weight'}
-                onChange={(e) => setPredictionType(e.target.value)}
-              />
-              몸무게
-            </label>
-          </div>
-        </div>
+    <div className="growth-prediction-container">
+      <div className="prediction-controls">
+        <select onChange={(e) => {
+            const member = members.find(m => m.id === e.target.value);
+            setSelectedMember(member);
+            setPredictionResult(null); // 멤버 변경 시 예측 결과 초기화
+            setChartData(null); // 멤버 변경 시 차트 초기화
+        }} defaultValue="">
+          <option value="" disabled>-- 회원을 선택하세요 --</option>
+          {members.map(m => (
+            <option key={m.id} value={m.id}>{m.name} ({m.gender === 'male' ? '남' : '여'})</option>
+          ))}
+        </select>
+        <select onChange={(e) => setPredictionPeriod(Number(e.target.value))} value={predictionPeriod}>
+          <option value={3}>3개월 후</option>
+          <option value={6}>6개월 후</option>
+          <option value={12}>1년 후</option>
+        </select>
+        <button onClick={handlePredict} disabled={loading || !selectedMember}>
+          {loading ? '분석 중...' : '결과 보기'}
+        </button>
       </div>
 
-      {selectedMember && predictionData ? (
-        <>
-          <div className="prediction-summary">
-            <h3>예측 요약</h3>
-            <div className="summary-cards">
-              <div className="summary-card">
-                <h4>현재 ({predictionData.currentAge.toFixed(1)}세)</h4>
-                <p className="value">
-                  {predictionType === 'height' ? 
-                    `${predictionData.predictions[0].height.toFixed(1)}cm` : 
-                    `${predictionData.predictions[0].weight.toFixed(1)}kg`
-                  }
-                </p>
-              </div>
-              <div className="summary-card">
-                <h4>1년 후 ({(predictionData.currentAge + 1).toFixed(1)}세)</h4>
-                <p className="value">
-                  {predictionType === 'height' ? 
-                    `${predictionData.predictions[predictionData.predictions.length - 1].height.toFixed(1)}cm` : 
-                    `${predictionData.predictions[predictionData.predictions.length - 1].weight.toFixed(1)}kg`
-                  }
-                </p>
-              </div>
-              <div className="summary-card">
-                <h4>예상 변화</h4>
-                <p className="value change">
-                  {(() => {
-                    const summary = getPredictionSummary();
-                    if (!summary) return '-';
-                    const change = summary.change;
-                    const isPositive = parseFloat(change) > 0;
-                    return (
-                      <span className={isPositive ? 'positive' : 'negative'}>
-                        {isPositive ? '+' : ''}{change}
-                        {predictionType === 'height' ? 'cm' : 'kg'}
-                      </span>
-                    );
-                  })()}
-                </p>
-              </div>
-            </div>
-          </div>
+      {predictionResult && (
+        <div className="prediction-result">
+          <h3>예측 결과</h3>
+          <p><strong>{predictionPeriod}개월 후 예상 키:</strong> {predictionResult.predictedHeight} cm</p>
+          <p><strong>{predictionPeriod}개월 후 예상 몸무게:</strong> {predictionResult.predictedWeight} kg</p>
+        </div>
+      )}
 
+      {chartData && (
           <div className="chart-container">
-            {getChartData() && <Line options={chartOptions} data={getChartData()} />}
+              <Line options={chartOptions} data={chartData} />
           </div>
-
-          <div className="prediction-table">
-            <h3>상세 예측 데이터</h3>
-            <div className="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>나이</th>
-                    <th>예측 {predictionType === 'height' ? '키' : '몸무게'}</th>
-                    <th>예상 날짜</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {predictionData.predictions.map((pred, index) => (
-                    <tr key={index}>
-                      <td>{pred.age.toFixed(1)}세</td>
-                      <td>
-                        {predictionType === 'height' ? 
-                          `${pred.height.toFixed(1)}cm` : 
-                          `${pred.weight.toFixed(1)}kg`
-                        }
-                      </td>
-                      <td>{pred.date.toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </>
-      ) : (
-        <p className="selection-prompt">회원을 선택하면 성장 예측을 볼 수 있습니다.</p>
       )}
     </div>
   );
