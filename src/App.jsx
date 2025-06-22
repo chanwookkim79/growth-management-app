@@ -37,7 +37,7 @@ function App() {
       <Breadcrumb />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={currentUser ? <Home /> : <Navigate to="/login" />} />
           <Route path="/login" element={currentUser ? <Navigate to="/" /> : <Login />} />
           <Route path="/signup" element={currentUser ? <Navigate to="/" /> : <Signup />} />
           
