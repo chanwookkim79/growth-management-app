@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { auth } from '../firebase/config';
 import { signOut } from 'firebase/auth';
@@ -8,10 +8,12 @@ import './Navbar.css';
 const Navbar = () => {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      setIsOpen(false); // Close menu on logout
       navigate('/login');
     } catch (error) {
       console.error('Logout failed', error);
@@ -19,20 +21,33 @@ const Navbar = () => {
     }
   };
 
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/">성장 관리</Link>
+        <Link to="/" onClick={closeMenu}>성장 관리</Link>
+        {currentUser && (
+          <button className="hamburger" onClick={toggleMenu}>
+            &#9776; {/* Hamburger Icon */}
+          </button>
+        )}
       </div>
-      <div className="navbar-links">
+      <div className={`navbar-links ${isOpen ? 'active' : ''}`}>
         {currentUser ? (
           <>
-            <Link to="/add-member">회원 등록</Link>
-            <Link to="/add-data">데이터 입력</Link>
-            <Link to="/manage-members">회원 관리</Link>
-            <Link to="/dashboard">모니터링</Link>
-            <Link to="/growth-prediction">성장 예측</Link>
-            <Link to="/data-backup">데이터 백업</Link>
+            <Link to="/add-member" onClick={closeMenu}>회원 등록</Link>
+            <Link to="/add-data" onClick={closeMenu}>데이터 입력</Link>
+            <Link to="/manage-members" onClick={closeMenu}>회원 관리</Link>
+            <Link to="/dashboard" onClick={closeMenu}>모니터링</Link>
+            <Link to="/growth-prediction" onClick={closeMenu}>성장 예측</Link>
+            <Link to="/data-backup" onClick={closeMenu}>데이터 백업</Link>
             <div className="user-info">
               <span>{currentUser.email}</span>
               <button onClick={handleLogout} className="logout-btn">로그아웃</button>
@@ -40,8 +55,8 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Link to="/login">로그인</Link>
-            <Link to="/signup">회원가입</Link>
+            <Link to="/login" onClick={closeMenu}>로그인</Link>
+            <Link to="/signup" onClick={closeMenu}>회원가입</Link>
           </>
         )}
       </div>

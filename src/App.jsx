@@ -32,7 +32,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <main style={{ padding: '1rem 2rem' }}>
+      <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={currentUser ? <Navigate to="/" /> : <Login />} />

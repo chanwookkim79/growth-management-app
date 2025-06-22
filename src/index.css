@@ -16,3 +16,14 @@ code {
 * {
   box-sizing: border-box;
 }
+
+.main-content {
+  padding: 2rem;
+  transition: padding 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+}
