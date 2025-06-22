@@ -119,4 +119,19 @@
   .hamburger {
     display: block;
   }
+}
+
+/* For very narrow screens like Galaxy Fold cover display */
+@media (max-width: 480px) {
+  .navbar-brand a {
+    font-size: 1.2em;
+  }
+
+  .navbar-links.active {
+    width: 85%; /* Give a bit more space */
+  }
+
+  .user-info span {
+    font-size: 0.8em;
+  }
 } 
