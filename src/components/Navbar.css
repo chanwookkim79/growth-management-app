@@ -63,6 +63,10 @@
   background-color: #c0392b;
 }
 
+.menu-group {
+  display: contents; /* Let the parent flexbox control the children */
+}
+
 .hamburger {
   display: none;
   font-size: 1.8em;
@@ -75,6 +79,13 @@
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
+  }
+
+  .menu-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 25px;
   }
 
   .navbar-links {

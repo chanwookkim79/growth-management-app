@@ -44,7 +44,7 @@ const Navbar = () => {
 
       <div className={`navbar-links ${isOpen ? 'active' : ''}`}>
         {currentUser ? (
-          <>
+          <div className="menu-group">
             <Link to="/add-member" onClick={closeMenu}>회원 등록</Link>
             <Link to="/add-data" onClick={closeMenu}>데이터 입력</Link>
             <Link to="/manage-members" onClick={closeMenu}>회원 관리</Link>
@@ -58,12 +58,12 @@ const Navbar = () => {
               <span>{currentUser.email}</span>
               <button onClick={handleLogout} className="logout-btn">로그아웃</button>
             </div>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="menu-group">
             <Link to="/login" onClick={closeMenu}>로그인</Link>
             <Link to="/signup" onClick={closeMenu}>회원가입</Link>
-          </>
+          </div>
         )}
       </div>
     </nav>
