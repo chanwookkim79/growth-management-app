@@ -80,15 +80,10 @@ const AddData = () => {
 
   return (
     <div className="add-data-container">
-      <form onSubmit={handleSubmit} className="data-form">
+      <form className="add-data-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="member-select">회원 선택</label>
-          <select 
-            id="member-select" 
-            value={selectedMember} 
-            onChange={(e) => setSelectedMember(e.target.value)}
-            required
-          >
+          <select id="member-select" value={selectedMember} onChange={(e) => setSelectedMember(e.target.value)} className="form-control" required>
             <option value="">-- 회원을 선택하세요 --</option>
             {members.map(member => (
               <option key={member.id} value={member.id}>
@@ -105,6 +100,7 @@ const AddData = () => {
             value={height}
             onChange={(e) => setHeight(e.target.value)}
             placeholder="키를 숫자로 입력하세요"
+            className="form-control"
           />
         </div>
         <div className="form-group">
@@ -115,6 +111,7 @@ const AddData = () => {
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             placeholder="몸무게를 숫자로 입력하세요"
+            className="form-control"
           />
         </div>
         {bmi && (

@@ -3,123 +3,129 @@ import { AuthContext } from '../context/AuthContext.jsx';
 import { db } from '../firebase/config';
 import { collection, addDoc } from "firebase/firestore"; 
 import './AddMember.css';
+import { useNavigate } from 'react-router-dom';
 
 const AddMember = () => {
   const { currentUser } = useContext(AuthContext);
   const [name, setName] = useState('');
-  const [birthdate, setBirthdate] = useState('');
+  const [dob, setDob] = useState('');
   const [gender, setGender] = useState('');
-  const [initialHeight, setInitialHeight] = useState('');
-  const [initialWeight, setInitialWeight] = useState('');
-  const [bmi, setBmi] = useState(null);
-
-  useEffect(() => {
-    if (initialHeight > 0 && initialWeight > 0) {
-      const heightInMeters = initialHeight / 100;
-      const bmiValue = (initialWeight / (heightInMeters * heightInMeters)).toFixed(2);
-      setBmi(bmiValue);
-    } else {
-      setBmi(null);
-    }
-  }, [initialHeight, initialWeight]);
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !birthdate || !initialHeight || !initialWeight) {
+    if (!name || !dob || !gender || !height || !weight) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
-    if (!currentUser) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
+    setLoading(true);
+
+    const heightInMeters = Number(height) / 100;
+    const bmiValue = (Number(weight) / (heightInMeters * heightInMeters)).toFixed(2);
+
     try {
-      const docRef = await addDoc(collection(db, "members"), {
+      await addDoc(collection(db, "members"), {
         userId: currentUser.uid,
         name,
-        birthdate,
+        dob,
         gender,
         initialData: {
-          height: Number(initialHeight),
-          weight: Number(initialWeight),
-          bmi: Number(bmi),
-          date: new Date()
+          date: new Date(),
+          height: Number(height),
+          weight: Number(weight),
+          bmi: Number(bmiValue)
         },
         growthData: []
       });
-      console.log("Document written with ID: ", docRef.id);
-      alert(`${name}님의 정보가 성공적으로 등록되었습니다.`);
-      // 폼 초기화
-      setName('');
-      setBirthdate('');
-      setInitialHeight('');
-      setInitialWeight('');
+      alert('회원이 성공적으로 등록되었습니다.');
+      navigate('/manage-members');
     } catch (error) {
-      console.error("Error adding document: ", error);
-      alert('데이터 저장에 실패했습니다. 다시 시도해주세요.');
+      console.error("Error adding member: ", error);
+      alert('회원 등록에 실패했습니다.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="add-member-container">
-      <form onSubmit={handleSubmit} className="member-form">
+      <form onSubmit={handleSubmit} className="add-member-form">
+        <h2>회원 등록</h2>
         <div className="form-group">
           <label htmlFor="name">이름</label>
           <input
-            type="text"
             id="name"
+            type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="이름을 입력하세요"
+            className="form-control"
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="birthdate">생년월일</label>
+          <label htmlFor="dob">생년월일</label>
           <input
+            id="dob"
             type="date"
-            id="birthdate"
-            value={birthdate}
-            onChange={(e) => setBirthdate(e.target.value)}
-            required
-          />
-        </div>
-        <div className="gender-select">
-          <label>성별:</label>
-          <input type="radio" id="male" name="gender" value="male" onChange={(e) => setGender(e.target.value)} required />
-          <label htmlFor="male">남자</label>
-          <input type="radio" id="female" name="gender" value="female" onChange={(e) => setGender(e.target.value)} />
-          <label htmlFor="female">여자</label>
-        </div>
-        <div className="form-group">
-          <label htmlFor="initialHeight">초기 키 (cm)</label>
-          <input
-            type="number"
-            id="initialHeight"
-            value={initialHeight}
-            onChange={(e) => setInitialHeight(e.target.value)}
-            placeholder="초기 키를 숫자로 입력하세요"
+            value={dob}
+            onChange={(e) => setDob(e.target.value)}
+            className="form-control"
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="initialWeight">초기 몸무게 (kg)</label>
-          <input
-            type="number"
-            id="initialWeight"
-            value={initialWeight}
-            onChange={(e) => setInitialWeight(e.target.value)}
-            placeholder="초기 몸무게를 숫자로 입력하세요"
-            required
-          />
-        </div>
-        {bmi && (
-          <div className="form-group">
-            <label>BMI</label>
-            <p className="bmi-result">{bmi}</p>
+          <label>성별</label>
+          <div className="radio-buttons">
+            <label>
+              <input
+                type="radio"
+                value="male"
+                checked={gender === 'male'}
+                onChange={(e) => setGender(e.target.value)}
+                required
+              />
+              남
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="female"
+                checked={gender === 'female'}
+                onChange={(e) => setGender(e.target.value)}
+                required
+              />
+              여
+            </label>
           </div>
-        )}
-        <button type="submit" className="submit-btn">등록하기</button>
+        </div>
+        <div className="form-group">
+          <label htmlFor="height">키 (cm)</label>
+          <input
+            id="height"
+            type="number"
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="weight">몸무게 (kg)</label>
+          <input
+            id="weight"
+            type="number"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            className="form-control"
+            required
+          />
+        </div>
+        <button type="submit" disabled={loading}>
+          {loading ? '등록 중...' : '회원 등록'}
+        </button>
       </form>
     </div>
   );

@@ -23,8 +23,8 @@ const Breadcrumb = () => {
   }
 
   return (
-    <nav className="breadcrumb-container">
-      <ol className="breadcrumb-list">
+    <nav aria-label="breadcrumb" className="breadcrumb-container">
+      <ol className="breadcrumb">
         <li className="breadcrumb-item">
           <Link to="/">Home</Link>
         </li>
