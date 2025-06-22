@@ -86,7 +86,7 @@
     top: 60px; /* Adjust based on navbar height */
     left: -100%;
     width: 70%;
-    height: 100vh;
+    height: calc(100vh - 60px); /* Full height minus navbar height */
     background-color: white;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     padding: 20px;
