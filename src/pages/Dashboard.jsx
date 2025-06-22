@@ -16,6 +16,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { format } from 'date-fns';
 import './Dashboard.css';
 
 // Vercel 재배포를 위한 주석
@@ -87,7 +88,7 @@ const Dashboard = () => {
     const weightChanges = [];
 
     allData.forEach((data, index) => {
-      dates.push(new Date(data.date.seconds * 1000).toLocaleDateString());
+      dates.push(format(new Date(data.date.seconds * 1000), 'yyyy-MM-dd'));
       heightValues.push(data.height);
       weightValues.push(data.weight);
       bmiValues.push(data.bmi);
@@ -116,7 +117,7 @@ const Dashboard = () => {
 
     // 차트 데이터 생성
     setChartData({
-      labels: allData.map(d => new Date(d.date.seconds * 1000).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' })),
+      labels: allData.map(d => format(new Date(d.date.seconds * 1000), 'yyyy-MM-dd')),
       datasets: [
         {
           type: 'line',

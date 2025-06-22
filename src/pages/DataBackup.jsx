@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { db } from '../firebase/config';
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
+import { format } from 'date-fns';
 import './DataBackup.css';
 
 const DataBackup = () => {
@@ -44,11 +46,27 @@ const DataBackup = () => {
     
     try {
       // 백업 데이터 준비
+      const allMembersData = [];
+      for (const member of members) {
+        const formattedData = {
+          ...member,
+          initialData: {
+            ...member.initialData,
+            date: format(member.initialData.date.toDate(), 'yyyy-MM-dd HH:mm:ss')
+          },
+          growthData: member.growthData.map(d => ({
+            ...d,
+            date: format(d.date.toDate(), 'yyyy-MM-dd HH:mm:ss')
+          }))
+        };
+        allMembersData.push(formattedData);
+      }
+
       const backupData = {
         userId: currentUser.uid,
         timestamp: new Date().toISOString(),
         version: '1.0',
-        members: members.map(member => ({
+        members: allMembersData.map(member => ({
           ...member,
           id: member.id // ID도 포함
         }))

@@ -10,6 +10,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  // 이메일로 관리자 여부 확인 (추후 role 기반으로 변경 예정)
+  const isAdmin = currentUser && currentUser.email === 'chanu79@gmail.com';
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -50,6 +53,9 @@ const Navbar = () => {
             <Link to="/dashboard" onClick={closeMenu}>모니터링</Link>
             <Link to="/growth-prediction" onClick={closeMenu}>성장 예측</Link>
             <Link to="/data-backup" onClick={closeMenu}>데이터 백업</Link>
+            {isAdmin && (
+              <Link to="/manage-all-members" onClick={closeMenu}>전체 회원 관리</Link>
+            )}
             <div className="user-info">
               <span>{currentUser.email}</span>
               <button onClick={handleLogout} className="logout-btn">로그아웃</button>

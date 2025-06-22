@@ -15,6 +15,7 @@ import Signup from './pages/Signup.jsx';
 import ManageMembers from './pages/ManageMembers.jsx';
 import GrowthPrediction from './pages/GrowthPrediction.jsx';
 import DataBackup from './pages/DataBackup.jsx';
+import ManageAllMembers from './pages/ManageAllMembers.jsx';
 
 // 보호된 라우트를 위한 래퍼 컴포넌트
 const ProtectedRoute = ({ children }) => {
@@ -84,6 +85,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DataBackup />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/manage-all-members" 
+            element={
+              <ProtectedRoute>
+                <ManageAllMembers />
               </ProtectedRoute>
             } 
           />
