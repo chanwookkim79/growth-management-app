@@ -1,0 +1,14 @@
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.error-message {
+  color: #c0392b;
+  background-color: #fbeae5;
+  border: 1px solid #c0392b;
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+} 

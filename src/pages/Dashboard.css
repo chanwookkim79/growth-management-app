@@ -1,0 +1,144 @@
+.dashboard-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-container h2 {
+  text-align: center;
+  color: #333;
+}
+
+.member-selector-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.member-selector-container label {
+  font-weight: 500;
+}
+
+.member-selector-container select {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 200px;
+}
+
+.chart-container {
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-wrapper {
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-wrapper h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.growth-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.growth-table th,
+.growth-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0e0e0;
+}
+
+.growth-table thead {
+  background-color: #f5f5f5;
+}
+
+.growth-table th {
+  font-weight: 600;
+  color: #555;
+}
+
+.growth-table tbody td:first-child,
+.growth-table thead th:first-child {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-align: left;
+}
+
+.change-up {
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.change-down {
+  color: #c0392b;
+  font-weight: 500;
+}
+
+.selection-prompt {
+  text-align: center;
+  color: #777;
+  padding: 3rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .dashboard-container h2 {
+    font-size: 1.3rem;
+  }
+
+  .member-selector-container {
+    flex-direction: column;
+    padding: 0.75rem;
+  }
+
+  .member-selector-container select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .chart-container,
+  .table-wrapper {
+    padding: 0.5rem;
+  }
+  
+  .table-wrapper h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .growth-table th,
+  .growth-table td {
+    padding: 0.4rem;
+    font-size: 0.75rem;
+  }
+} 

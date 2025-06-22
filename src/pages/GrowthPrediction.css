@@ -1,0 +1,257 @@
+.prediction-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.prediction-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 2rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.member-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.member-selector label {
+  font-weight: 600;
+  color: #333;
+}
+
+.member-selector select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-width: 200px;
+}
+
+.prediction-type-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.prediction-type-selector label {
+  font-weight: 600;
+  color: #333;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.radio-group input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.prediction-summary {
+  margin-bottom: 2rem;
+}
+
+.prediction-summary h3 {
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+}
+
+.summary-card h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.summary-card .value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.summary-card .value.change {
+  font-size: 1.5rem;
+}
+
+.summary-card .value.change .positive {
+  color: #4ade80;
+}
+
+.summary-card .value.change .negative {
+  color: #f87171;
+}
+
+.chart-container {
+  height: 400px;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.prediction-table {
+  margin-top: 2rem;
+}
+
+.prediction-table h3 {
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.prediction-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.prediction-table th,
+.prediction-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.prediction-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  position: sticky;
+  top: 0;
+}
+
+.prediction-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.prediction-table td:first-child {
+  font-weight: 500;
+}
+
+.prediction-table td:nth-child(2) {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.selection-prompt {
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
+  margin-top: 3rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .prediction-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .member-selector,
+  .prediction-type-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .member-selector select {
+    min-width: auto;
+  }
+  
+  .radio-group {
+    justify-content: center;
+  }
+  
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+  
+  .prediction-table th,
+  .prediction-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prediction-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .summary-card {
+    padding: 1rem;
+  }
+  
+  .summary-card .value {
+    font-size: 1.5rem;
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+} 

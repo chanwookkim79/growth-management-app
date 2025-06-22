@@ -1,0 +1,27 @@
+{
+  "name": "성장 관리 앱",
+  "short_name": "성장관리",
+  "description": "아이들의 성장을 체계적으로 관리하고 예측하는 애플리케이션",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["health", "productivity", "education"],
+  "lang": "ko",
+  "dir": "ltr"
+} 
