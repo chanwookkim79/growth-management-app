@@ -22,6 +22,13 @@ const Breadcrumb = () => {
     return null; // 홈 화면에서는 보이지 않음
   }
 
+  const nameMapping = {
+    'add-member': '회원 등록',
+    'add-data': '데이터 입력',
+    'manage-members': '회원 관리',
+    'dashboard': '성장 모니터링',
+  };
+
   return (
     <nav aria-label="breadcrumb" className="breadcrumb-container">
       <ol className="breadcrumb">
@@ -31,7 +38,7 @@ const Breadcrumb = () => {
         {pathnames.map((value, index) => {
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;
           const isLast = index === pathnames.length - 1;
-          const name = breadcrumbNameMap[to];
+          const name = nameMapping[value] || breadcrumbNameMap[to];
 
           if (!name) return null;
 

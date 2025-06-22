@@ -27,7 +27,7 @@
 }
 
 .add-data-form .form-group {
-  margin-bottom: 25px;
+  margin-bottom: 1.5rem;
 }
 
 .add-data-form label {
@@ -39,7 +39,7 @@
 
 .add-data-form .button-container {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 2rem;
 }
 
 .add-data-form button {
