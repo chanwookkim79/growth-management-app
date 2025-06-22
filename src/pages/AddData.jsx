@@ -123,7 +123,11 @@ const AddData = () => {
             <p className="bmi-result">{bmi}</p>
           </div>
         )}
-        <button type="submit" className="submit-btn">데이터 추가</button>
+        <div className="button-container">
+          <button type="submit" disabled={loading}>
+            {loading ? '추가 중...' : '데이터 추가'}
+          </button>
+        </div>
       </form>
     </div>
   );

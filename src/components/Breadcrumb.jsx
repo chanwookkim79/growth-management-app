@@ -26,7 +26,7 @@ const Breadcrumb = () => {
     <nav className="breadcrumb-container">
       <ol className="breadcrumb-list">
         <li className="breadcrumb-item">
-          <Link to="/">성장 관리</Link>
+          <Link to="/">Home</Link>
         </li>
         {pathnames.map((value, index) => {
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;

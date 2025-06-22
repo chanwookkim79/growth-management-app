@@ -15,4 +15,22 @@
   background-repeat: no-repeat;
   background-position: right 10px top 50%;
   background-size: .65em auto;
+}
+
+.add-data-form .form-group {
+  margin-bottom: 25px;
+}
+
+.add-data-form label {
+  display: block;
+  color: #333;
+}
+
+.add-data-form .button-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.add-data-form button {
+  padding: 12px 25px;
 } 
