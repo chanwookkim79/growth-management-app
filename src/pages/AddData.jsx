@@ -79,7 +79,7 @@ const AddData = () => {
   }
 
   return (
-    <div className="form-container">
+    <div className="add-data-container">
       <h2>키/몸무게 추가 입력</h2>
       <form onSubmit={handleSubmit} className="data-form">
         <div className="form-group">
