@@ -143,17 +143,17 @@
   }
 }
 
-/* For very narrow screens like Galaxy Fold cover display */
-@media (max-width: 480px) {
+/* For very narrow screens like Galaxy Fold cover display (Portrait) */
+@media (max-width: 420px) { /* Adjusted from 480px for more specific targeting */
   .navbar-brand a {
     font-size: 1.2em;
   }
 
   .navbar-links.active {
-    width: 85%; /* Give a bit more space */
+    width: 85%; /* Give a bit more space on narrow screens */
   }
 
   .user-info span {
-    font-size: 0.8em;
+    font-size: 0.85em; /* Slightly larger for readability */
   }
 } 
