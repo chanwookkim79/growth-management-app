@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { db } from '../firebase/config';
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore"; 
 import './AddMember.css';
 import { useNavigate } from 'react-router-dom';
 import '../styles/form-styles.css';
+import { useAlert } from '../context/AlertContext';
 
 const AddMember = () => {
   const { currentUser } = useContext(AuthContext);
@@ -15,19 +16,29 @@ const AddMember = () => {
   const [weight, setWeight] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !dob || !gender || !height || !weight) {
-      alert('모든 필드를 입력해주세요.');
+      showAlert('모든 필드를 입력해주세요.');
       return;
     }
     setLoading(true);
 
-    const heightInMeters = Number(height) / 100;
-    const bmiValue = (Number(weight) / (heightInMeters * heightInMeters)).toFixed(2);
-
     try {
+      // 동일 이름 체크
+      const q = query(collection(db, "members"), where("userId", "==", currentUser.uid), where("name", "==", name));
+      const snapshot = await getDocs(q);
+      if (!snapshot.empty) {
+        showAlert('이미 동일한 이름의 프로필이 존재합니다.');
+        setLoading(false);
+        return;
+      }
+
+      const heightInMeters = Number(height) / 100;
+      const bmiValue = (Number(weight) / (heightInMeters * heightInMeters)).toFixed(2);
+
       await addDoc(collection(db, "members"), {
         userId: currentUser.uid,
         name,
@@ -41,11 +52,11 @@ const AddMember = () => {
         },
         growthData: []
       });
-      alert('회원이 성공적으로 등록되었습니다.');
+      showAlert('프로필이 성공적으로 추가되었습니다.');
       navigate('/manage-members');
     } catch (error) {
       console.error("Error adding member: ", error);
-      alert('회원 등록에 실패했습니다.');
+      showAlert('프로필 추가에 실패했습니다.');
     } finally {
       setLoading(false);
     }

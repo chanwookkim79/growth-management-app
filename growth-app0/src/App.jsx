@@ -5,6 +5,8 @@ import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext.jsx';
 import Navbar from './components/Navbar.jsx';
 import Breadcrumb from './components/Breadcrumb.jsx';
+import CustomAlert from './components/CustomAlert.jsx';
+import { AlertProvider, useAlert } from './context/AlertContext.jsx';
 
 // Page Components
 import Home from './pages/Home.jsx';
@@ -32,6 +34,7 @@ const ProtectedRoute = ({ children }) => {
 const AppContent = () => {
   const { currentUser } = useContext(AuthContext);
   const location = useLocation();
+  const { alert, closeAlert } = useAlert();
 
   // 로그인과 회원가입 페이지 경로
   const authPaths = ['/login', '/signup'];
@@ -40,6 +43,7 @@ const AppContent = () => {
     <>
       <Navbar />
       {!authPaths.includes(location.pathname) && <Breadcrumb />}
+      <CustomAlert message={alert} onClose={closeAlert} />
       <main className="main-content">
         <Routes>
           <Route path="/" element={currentUser ? <Home /> : <Navigate to="/login" />} />
@@ -83,9 +87,11 @@ const AppContent = () => {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <AlertProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </AlertProvider>
   );
 }
 

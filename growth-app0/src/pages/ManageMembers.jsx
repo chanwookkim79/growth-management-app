@@ -4,9 +4,11 @@ import { db } from '../firebase/config';
 import { collection, query, where, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { format, differenceInMonths, parseISO } from 'date-fns';
 import './ManageMembers.css';
+import { useAlert } from '../context/AlertContext';
 
 const ManageMembers = () => {
   const { currentUser } = useContext(AuthContext);
+  const { showAlert } = useAlert();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -14,6 +16,10 @@ const ManageMembers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', dob: '', gender: '' });
+
+  // 삭제 모달 상태
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const fetchMembers = async () => {
     if (!currentUser) return;
@@ -25,7 +31,7 @@ const ManageMembers = () => {
       setMembers(membersList.sort((a, b) => a.name.localeCompare(b.name))); // 이름순으로 정렬
     } catch (error) {
       console.error("Error fetching members: ", error);
-      alert('회원 목록을 불러오는 데 실패했습니다.');
+      showAlert('회원 목록을 불러오는 데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -33,17 +39,32 @@ const ManageMembers = () => {
 
   useEffect(() => { fetchMembers(); }, [currentUser]);
 
-  const handleDelete = async (memberId, memberName) => {
-    if (window.confirm(`'${memberName}' 회원을 정말로 삭제하시겠습니까?`)) {
-      try {
-        await deleteDoc(doc(db, "members", memberId));
-        alert('회원이 삭제되었습니다.');
-        fetchMembers();
-      } catch (error) {
-        console.error("Error deleting document: ", error);
-        alert('회원 삭제에 실패했습니다.');
-      }
+  // 삭제 버튼 클릭 시 모달 오픈
+  const handleDeleteClick = (member) => {
+    setDeleteTarget(member);
+    setShowDeleteModal(true);
+  };
+
+  // 삭제 확인
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteDoc(doc(db, "members", deleteTarget.id));
+      showAlert('회원이 삭제되었습니다.');
+      fetchMembers();
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+      showAlert('회원 삭제에 실패했습니다.');
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteTarget(null);
     }
+  };
+
+  // 삭제 취소
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setDeleteTarget(null);
   };
   
   // 수정 버튼 클릭 시 모달 열기
@@ -69,12 +90,12 @@ const ManageMembers = () => {
         dob: editForm.dob,
         gender: editForm.gender,
       });
-      alert('회원 정보가 수정되었습니다.');
+      showAlert('회원 정보가 수정되었습니다.');
       closeModal();
       fetchMembers();
     } catch (error) {
       console.error("Error updating document: ", error);
-      alert('정보 수정에 실패했습니다.');
+      showAlert('정보 수정에 실패했습니다.');
     }
   };
 
@@ -118,10 +139,10 @@ const ManageMembers = () => {
       // Update the main members list as well
       setMembers(prevMembers => prevMembers.map(m => m.id === updatedMember.id ? updatedMember : m));
 
-      alert('기록이 삭제되었습니다.');
+      showAlert('기록이 삭제되었습니다.');
     } catch (error) {
       console.error("Error deleting record: ", error);
-      alert('기록 삭제에 실패했습니다.');
+      showAlert('기록 삭제에 실패했습니다.');
     }
   };
 
@@ -150,7 +171,20 @@ const ManageMembers = () => {
 
   return (
     <div className="manage-members-container">
-      <h2>프로필 관리</h2>
+      {/* 삭제 확인 모달 */}
+      {showDeleteModal && deleteTarget && (
+        <div className="modal-backdrop">
+          <div className="modal-content">
+            <div style={{ marginBottom: '1.5rem', fontWeight: 500 }}>
+              '{deleteTarget.name}' 회원을 정말로 삭제하시겠습니까?
+            </div>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button className="action-btn delete-btn" onClick={handleDeleteConfirm}>예</button>
+              <button className="action-btn cancel-btn" onClick={handleDeleteCancel}>아니오</button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* 회원 정보 수정 모달 */}
       {isModalOpen && selectedMember && (
         <div className="modal-backdrop" onClick={closeModal}>
@@ -189,7 +223,7 @@ const ManageMembers = () => {
                         <th>키(cm) (변화)</th>
                         <th>몸무게(kg) (변화)</th>
                         <th>BMI</th>
-                        <th>기록 관리</th>
+                        <th>비고</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -254,7 +288,7 @@ const ManageMembers = () => {
                   </td>
                   <td className="actions-cell">
                     <button onClick={() => handleEditClick(member)} className="action-btn edit-btn">수정</button>
-                    <button onClick={() => handleDelete(member.id, member.name)} className="action-btn delete-btn">삭제</button>
+                    <button onClick={() => handleDeleteClick(member)} className="action-btn delete-btn">삭제</button>
                   </td>
                 </tr>
               ))}

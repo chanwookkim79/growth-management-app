@@ -5,6 +5,7 @@ import { db } from '../firebase/config';
 import { collection, getDocs, doc, updateDoc, arrayUnion, query, where } from 'firebase/firestore';
 import './AddData.css'; // AddData.css를 import 합니다.
 import '../styles/form-styles.css';
+import { useAlert } from '../context/AlertContext';
 
 const AddData = () => {
   const { currentUser } = useContext(AuthContext);
@@ -16,6 +17,7 @@ const AddData = () => {
   const [bmi, setBmi] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { showAlert } = useAlert();
 
   // 컴포넌트가 처음 렌더링될 때 Firestore에서 회원 목록을 가져옵니다.
   useEffect(() => {
@@ -31,7 +33,7 @@ const AddData = () => {
         setMembers(membersList);
       } catch (error) {
         console.error("Error fetching members: ", error);
-        alert('회원 목록을 불러오는 데 실패했습니다.');
+        showAlert('회원 목록을 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -61,7 +63,7 @@ const AddData = () => {
     e.preventDefault();
     setLoading(true);
     if (!selectedMember || !height || !weight) {
-      alert('회원을 선택하고 키와 몸무게를 모두 입력해주세요.');
+      showAlert('회원을 선택하고 키와 몸무게를 모두 입력해주세요.');
       setLoading(false);
       return;
     }
@@ -75,10 +77,11 @@ const AddData = () => {
           date: new Date()
         })
       });
+      showAlert('성장 데이터가 성공적으로 추가되었습니다.');
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error updating document: ", error);
-      alert('데이터 추가에 실패했습니다.');
+      showAlert('성장 데이터 추가에 실패했습니다.');
     } finally {
       setLoading(false);
     }

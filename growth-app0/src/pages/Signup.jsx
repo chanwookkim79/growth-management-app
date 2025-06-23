@@ -4,12 +4,14 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './AuthForm.css'; // 공통 스타일 사용
+import { useAlert } from '../context/AlertContext';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,9 +27,11 @@ const Signup = () => {
       });
 
       // 회원가입 성공 시 홈으로 이동
+      showAlert('회원가입이 완료되었습니다.');
       navigate('/');
     } catch (err) {
       setError('회원가입에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.');
+      showAlert('회원가입에 실패했습니다.');
       console.error(err);
     }
   };
