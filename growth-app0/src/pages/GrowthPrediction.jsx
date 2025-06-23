@@ -40,13 +40,19 @@ const GrowthPrediction = () => {
       return;
     }
     try {
+      // height/weight 값이 모두 있는 데이터만 필터링
       const allData = [
         member.initialData,
         ...(member.growthData || [])
-      ].sort((a, b) => a.date.toMillis() - b.date.toMillis());
+      ].filter(d => d && d.height != null && d.weight != null && d.date)
+       .sort((a, b) => {
+         const aDate = a.date && a.date.toDate ? a.date.toDate() : new Date(a.date);
+         const bDate = b.date && b.date.toDate ? b.date.toDate() : new Date(b.date);
+         return aDate - bDate;
+       });
 
       if (allData.length < 2) {
-        setErrorMsg("예측을 위한 데이터가 부족합니다. (최소 2개 이상의 기록 필요)");
+        setErrorMsg("예측을 위한 성장 기록이 2개 이상 필요합니다. (키, 몸무게, 날짜가 모두 입력된 기록만 반영됩니다)");
         setPredictionResult(null);
         setChartData(null);
         return;
