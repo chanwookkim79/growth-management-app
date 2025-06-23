@@ -43,7 +43,7 @@ const AppContent = () => {
   return (
     <>
       <Navbar />
-      {!authRoutes.includes(location.pathname) && <Breadcrumb />}
+      {/* 브레드크럼 메뉴 삭제 */}
       <CustomAlert message={alert} onClose={closeAlert} />
       <main className="main-content">
         <Routes>
