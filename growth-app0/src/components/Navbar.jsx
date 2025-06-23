@@ -91,7 +91,7 @@ const Navbar = () => {
         ) : (
           <>
             <Link to="/login" onClick={closeMenu}>로그인</Link>
-            <Link to="/signup" onClick={closeMenu}>회원가입</Link>
+            <Link to="/signup" onClick={closeMenu}>프로필 등록</Link>
             <div className="app-version">v1.1.0</div>
           </>
         )}

@@ -31,7 +31,7 @@ const ManageMembers = () => {
       setMembers(membersList.sort((a, b) => a.name.localeCompare(b.name))); // 이름순으로 정렬
     } catch (error) {
       console.error("Error fetching members: ", error);
-      showAlert('회원 목록을 불러오는 데 실패했습니다.');
+      showAlert('프로필 목록을 불러오는 데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -50,11 +50,11 @@ const ManageMembers = () => {
     if (!deleteTarget) return;
     try {
       await deleteDoc(doc(db, "members", deleteTarget.id));
-      showAlert('회원이 삭제되었습니다.');
+      showAlert('프로필이 삭제되었습니다.');
       fetchMembers();
     } catch (error) {
       console.error("Error deleting document: ", error);
-      showAlert('회원 삭제에 실패했습니다.');
+      showAlert('프로필 삭제에 실패했습니다.');
     } finally {
       setShowDeleteModal(false);
       setDeleteTarget(null);
@@ -90,7 +90,7 @@ const ManageMembers = () => {
         dob: editForm.dob,
         gender: editForm.gender,
       });
-      showAlert('회원 정보가 수정되었습니다.');
+      showAlert('프로필 정보가 수정되었습니다.');
       closeModal();
       fetchMembers();
     } catch (error) {
@@ -167,7 +167,7 @@ const ManageMembers = () => {
     return <span className={className}>{symbol} {Math.abs(num)}</span>;
   };
 
-  if (loading) return <div>회원 목록을 불러오는 중...</div>;
+  if (loading) return <div>프로필 목록을 불러오는 중...</div>;
 
   return (
     <div className="manage-members-container">
@@ -176,7 +176,7 @@ const ManageMembers = () => {
         <div className="modal-backdrop">
           <div className="modal-content">
             <div style={{ marginBottom: '1.5rem', fontWeight: 500 }}>
-              '{deleteTarget.name}' 회원을 정말로 삭제하시겠습니까?
+              '{deleteTarget.name}' 프로필을 정말로 삭제하시겠습니까?
             </div>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
               <button className="action-btn delete-btn" onClick={handleDeleteConfirm}>예</button>
@@ -185,7 +185,7 @@ const ManageMembers = () => {
           </div>
         </div>
       )}
-      {/* 회원 정보 수정 모달 */}
+      {/* 프로필 정보 수정 모달 */}
       {isModalOpen && selectedMember && (
         <div className="modal-backdrop" onClick={closeModal}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -257,36 +257,29 @@ const ManageMembers = () => {
         </div>
       )}
 
-      {/* 회원 목록 테이블 */}
+      {/* 프로필 목록 테이블 */}
       {members.length > 0 ? (
         <div className="table-responsive">
           <table className="members-table">
             <thead>
               <tr>
-                <th>이름</th>
-                <th>생년월일</th>
-                <th>개월 수 (나이)</th>
-                <th>성별</th>
-                <th>등록일</th>
-                <th>비고</th>
+                <th scope="col">이름</th>
+                <th scope="col">생년월일</th>
+                <th scope="col">개월 수(나이)</th>
+                <th scope="col">성별</th>
+                <th scope="col">등록일</th>
+                <th scope="col">비고</th>
               </tr>
             </thead>
             <tbody>
               {members.map(member => (
                 <tr key={member.id}>
-                  <td>{member.name}</td>
-                  <td>{member.dob}</td>
-                  <td>{`${differenceInMonths(new Date(), parseISO(member.dob))}개월`}</td>
-                  <td>{member.gender === 'male' ? '남' : '여'}</td>
-                  <td>
-                    {member.createdAt 
-                      ? format(member.createdAt.toDate(), 'yyyy-MM-dd') 
-                      : (member.initialData?.date 
-                          ? format(member.initialData.date.toDate(), 'yyyy-MM-dd')
-                          : 'N/A')
-                    }
-                  </td>
-                  <td className="actions-cell">
+                  <td data-label="이름">{member.name}</td>
+                  <td data-label="생년월일">{format(new Date(member.dob), 'yyyy-MM-dd')}</td>
+                  <td data-label="개월 수(나이)">{differenceInMonths(new Date(), new Date(member.dob))}개월</td>
+                  <td data-label="성별">{member.gender === 'male' ? '남' : '여'}</td>
+                  <td data-label="등록일">{member.initialData.date ? format(member.initialData.date.toDate(), 'yyyy-MM-dd') : '-'}</td>
+                  <td data-label="비고" className="actions-cell">
                     <button onClick={() => handleEditClick(member)} className="action-btn edit-btn">수정</button>
                     <button onClick={() => handleDeleteClick(member)} className="action-btn delete-btn">삭제</button>
                   </td>
@@ -296,7 +289,7 @@ const ManageMembers = () => {
           </table>
         </div>
       ) : (
-        <p className="no-members-message">등록된 회원이 없습니다.</p>
+        <p className="no-members-message">등록된 프로필이 없습니다. '프로필 추가' 메뉴에서 새 프로필을 등록해주세요.</p>
       )}
     </div>
   );

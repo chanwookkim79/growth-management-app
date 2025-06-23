@@ -27,7 +27,7 @@
 }
 
 .add-data-form .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .add-data-form label {
@@ -83,6 +83,22 @@
 
 .submit-btn:disabled {
   background-color: #ccc;
+}
+
+/* For very narrow screens to prevent scrolling */
+@media (max-width: 480px) {
+  .add-data-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .add-data-form .form-group {
+    margin-bottom: 0.8rem;
+  }
+
+  .add-data-form label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
 }
 
 /* Modal Styles - 중복 제거, 공통 스타일(form-styles.css) 사용 */ 

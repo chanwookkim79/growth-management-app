@@ -32,17 +32,18 @@ const ProtectedRoute = ({ children }) => {
 
 // App 컴포넌트 내에서 라우팅 관련 로직을 처리하는 부분
 const AppContent = () => {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, loading } = useContext(AuthContext);
   const location = useLocation();
   const { alert, closeAlert } = useAlert();
 
-  // 로그인과 회원가입 페이지 경로
-  const authPaths = ['/login', '/signup'];
+  // 로그인과 프로필 등록 페이지 경로
+  const authRoutes = ['/login', '/signup'];
+  const isAuthPage = authRoutes.includes(location.pathname);
 
   return (
     <>
       <Navbar />
-      {!authPaths.includes(location.pathname) && <Breadcrumb />}
+      {!authRoutes.includes(location.pathname) && <Breadcrumb />}
       <CustomAlert message={alert} onClose={closeAlert} />
       <main className="main-content">
         <Routes>

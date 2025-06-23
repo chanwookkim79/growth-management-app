@@ -5,5 +5,7 @@ export const navLinks = [
   { path: '/growth-prediction', name: '성장 예측', admin: false },
   { path: '/members', name: '프로필 관리', admin: false },
   { path: '/data-backup', name: '데이터 백업', admin: false },
-  { path: '/manage-all-members', name: '전체 회원 관리', admin: true },
-]; 
+  { path: '/manage-all-members', name: '전체 프로필 관리', admin: true },
+];
+
+export const nonAdminRoutes = navLinks.filter(route => !route.admin); 

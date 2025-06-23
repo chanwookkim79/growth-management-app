@@ -19,7 +19,7 @@ const AddData = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { showAlert } = useAlert();
 
-  // 컴포넌트가 처음 렌더링될 때 Firestore에서 회원 목록을 가져옵니다.
+  // 컴포넌트가 처음 렌더링될 때 Firestore에서 프로필 목록을 가져옵니다.
   useEffect(() => {
     const fetchMembers = async () => {
       if (!currentUser) return;
@@ -33,7 +33,7 @@ const AddData = () => {
         setMembers(membersList);
       } catch (error) {
         console.error("Error fetching members: ", error);
-        showAlert('회원 목록을 불러오는 데 실패했습니다.');
+        showAlert('프로필 목록을 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -63,7 +63,7 @@ const AddData = () => {
     e.preventDefault();
     setLoading(true);
     if (!selectedMember || !height || !weight) {
-      showAlert('회원을 선택하고 키와 몸무게를 모두 입력해주세요.');
+      showAlert('프로필을 선택하고 키와 몸무게를 모두 입력해주세요.');
       setLoading(false);
       return;
     }
@@ -77,11 +77,12 @@ const AddData = () => {
           date: new Date()
         })
       });
-      showAlert('성장 데이터가 성공적으로 추가되었습니다.');
+      showAlert('성장 기록이 성공적으로 추가되었습니다.');
       setIsModalOpen(true);
+      navigate('/', { state: { memberId: selectedMember } });
     } catch (error) {
       console.error("Error updating document: ", error);
-      showAlert('성장 데이터 추가에 실패했습니다.');
+      showAlert('성장 기록 추가에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -92,22 +93,22 @@ const AddData = () => {
     setIsModalOpen(false);
     handleFormReset();
     if (goToDashboard) {
-      // state를 통해 대시보드로 회원 ID 전달
+      // state를 통해 대시보드로 프로필 ID 전달
       navigate('/dashboard', { state: { memberId: lastSelectedMemberId } });
     }
   };
 
   if (loading) {
-    return <p>회원 목록을 불러오는 중...</p>;
+    return <p>프로필 목록을 불러오는 중...</p>;
   }
 
   return (
     <div className="add-data-container">
       <form className="add-data-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="member-select">회원 선택</label>
+          <label htmlFor="member-select">프로필 선택</label>
           <select id="member-select" value={selectedMember} onChange={(e) => setSelectedMember(e.target.value)} className="form-control" required>
-            <option value="">-- 회원을 선택하세요 --</option>
+            <option value="">-- 프로필을 선택하세요 --</option>
             {members.map(member => (
               <option key={member.id} value={member.id}>
                 {member.name} (생년월일: {member.dob})

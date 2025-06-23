@@ -41,50 +41,49 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [selectedMemberId, setSelectedMemberId] = useState(null);
   const [chartData, setChartData] = useState(null);
   const [pivotedTableData, setPivotedTableData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 현재 로그인한 사용자의 회원 목록을 불러옵니다.
+  // 현재 로그인한 사용자의 프로필 목록을 불러옵니다.
   useEffect(() => {
+    if (!currentUser) return;
+    
+    setLoading(true);
     const fetchMembers = async () => {
-      if (!currentUser) return;
-      try {
-        const q = query(collection(db, "members"), where("userId", "==", currentUser.uid));
-        const querySnapshot = await getDocs(q);
-        const membersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setMembers(membersList);
-        
-        // AddData 페이지에서 전달받은 memberId가 있는지 확인
-        const memberIdFromState = location.state?.memberId;
-        if (memberIdFromState) {
-          const memberToSelect = membersList.find(m => m.id === memberIdFromState);
-          if (memberToSelect) {
-            setSelectedMember(memberToSelect);
-          }
-          // state를 초기화하여 새로고침 시 재선택 방지
-          navigate(location.pathname, { replace: true });
-        }
-      } catch (error) {
-        console.error("Error fetching members: ", error);
-      } finally {
-        setLoading(false);
+      const q = query(collection(db, "members"), where("userId", "==", currentUser.uid));
+      const querySnapshot = await getDocs(q);
+      const membersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMembers(membersList);
+      
+      // 다른 페이지에서 전달받은 memberId가 있으면 해당 프로필을 기본으로 선택
+      if (location.state?.memberId) {
+        setSelectedMemberId(location.state.memberId);
+      } else if (membersList.length > 0) {
+        setSelectedMemberId(membersList[0].id);
       }
+      setLoading(false);
     };
-    fetchMembers();
-  }, [currentUser]);
 
-  // 선택된 회원의 데이터를 가공하여 차트와 테이블 데이터를 만듭니다.
+    fetchMembers();
+  }, [currentUser, location.state]);
+
+  // 선택된 프로필의 데이터를 가공하여 차트와 테이블 데이터를 만듭니다.
   useEffect(() => {
-    if (!selectedMember) {
-      setChartData(null);
+    if (!selectedMemberId) {
+      setSelectedMember(null);
       setPivotedTableData(null);
+      setChartData(null);
       return;
     }
 
+    const member = members.find(m => m.id === selectedMemberId);
+    if (!member) return;
+
     const allData = [
-      selectedMember.initialData,
-      ...(selectedMember.growthData || [])
+      member.initialData,
+      ...(member.growthData || [])
     ].sort((a, b) => a.date.toMillis() - b.date.toMillis());
 
     if (allData.length === 0) {
@@ -151,7 +150,7 @@ const Dashboard = () => {
         },
       ],
     });
-  }, [selectedMember]);
+  }, [selectedMemberId, members]);
   
   const chartOptions = {
     maintainAspectRatio: false,
@@ -163,7 +162,7 @@ const Dashboard = () => {
     plugins: {
       title: {
         display: true,
-        text: selectedMember ? `${selectedMember.name}님의 성장 기록` : '회원을 선택해주세요',
+        text: selectedMember ? `${selectedMember.name}님의 성장 기록` : '프로필을 선택해주세요',
         font: { size: 18 }
       },
       legend: { position: 'top' }
@@ -185,11 +184,9 @@ const Dashboard = () => {
     }
   };
 
-
   const handleMemberChange = (e) => {
     const memberId = e.target.value;
-    const member = members.find(m => m.id === memberId);
-    setSelectedMember(member || null);
+    setSelectedMemberId(memberId);
   };
 
   const renderChange = (value) => {
@@ -209,28 +206,36 @@ const Dashboard = () => {
     return '';
   };
 
-  if (loading) return <p>회원 목록을 불러오는 중...</p>;
+  if (loading) return <p>프로필 목록을 불러오는 중...</p>;
 
   return (
     <div className="dashboard-container">
-      <div className="member-selector-container">
-        <label htmlFor="member-select">회원 선택: </label>
-        <select id="member-select" onChange={handleMemberChange} value={selectedMember ? selectedMember.id : ''}>
-          <option value="" disabled>-- 회원을 선택하세요 --</option>
-          {members.map(m => (
-            <option key={m.id} value={m.id}>{m.name}</option>
-          ))}
-        </select>
+      <div className="controls-container">
+        <div className="member-select-container">
+          <label htmlFor="member-select">프로필 선택: </label>
+          <select 
+            id="member-select" 
+            value={selectedMemberId || ''} 
+            onChange={(e) => setSelectedMemberId(e.target.value)}
+            className="member-select-dropdown"
+          >
+            <option value="" disabled>-- 프로필을 선택하세요 --</option>
+            {members.map(member => (
+              <option key={member.id} value={member.id}>{member.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {selectedMember ? (
-        <>
+        <div className="content-container">
           <div className="chart-container">
-            {chartData && <Bar options={chartOptions} data={chartData} />}
+            {chartData ? <Bar options={chartOptions} data={chartData} /> : <p>차트 데이터를 불러오는 중...</p>}
           </div>
-          <div className="table-wrapper">
+          <div className="data-table-container">
+            <h3>상세 기록</h3>
             {pivotedTableData ? (
-              <div className="table-container">
+              <div className="table-wrapper">
                 <table className="growth-table">
                   <thead>
                     <tr>
@@ -262,9 +267,9 @@ const Dashboard = () => {
               </div>
             ) : <p>표시할 데이터가 없습니다.</p>}
           </div>
-        </>
+        </div>
       ) : (
-        <p className="selection-prompt">회원을 선택하면 성장 기록을 볼 수 있습니다.</p>
+        <p className="selection-prompt">프로필을 선택하면 성장 기록을 볼 수 있습니다.</p>
       )}
     </div>
   );

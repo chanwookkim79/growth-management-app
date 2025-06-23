@@ -109,6 +109,51 @@
   }
 }
 
+/* Responsive Table for very narrow screens (Card View) */
+@media (max-width: 600px) {
+  .members-table thead {
+    display: none; /* Hide table header */
+  }
+
+  .members-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 1rem;
+  }
+
+  .members-table td {
+    display: flex;
+    justify-content: space-between; /* Align label and value */
+    text-align: right;
+    padding: 0.5rem;
+    border-bottom: 1px dashed #eee;
+  }
+  
+  .members-table td:last-child {
+    border-bottom: none;
+  }
+
+  .members-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-align: left;
+    margin-right: 1rem;
+    color: #333;
+  }
+
+  .actions-cell {
+    justify-content: flex-end; /* Align buttons to the right */
+    padding-top: 0.5rem;
+  }
+  
+  .actions-cell::before {
+    display: none; /* Hide label for action buttons */
+  }
+}
+
 .manage-container {
   max-width: 800px;
   margin: 2rem auto;

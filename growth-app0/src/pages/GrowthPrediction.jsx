@@ -18,10 +18,10 @@ const GrowthPrediction = () => {
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 회원 목록 불러오기
+  // 프로필 목록 불러오기
   useEffect(() => {
+    if (!currentUser) return;
     const fetchMembers = async () => {
-      if (!currentUser) return;
       const q = query(collection(db, "members"), where("userId", "==", currentUser.uid));
       const querySnapshot = await getDocs(q);
       setMembers(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -31,7 +31,7 @@ const GrowthPrediction = () => {
 
   const handlePredict = () => {
     if (!selectedMember) {
-      alert("먼저 회원을 선택해주세요.");
+      alert("먼저 프로필을 선택해주세요.");
       return;
     }
 
@@ -158,7 +158,7 @@ const GrowthPrediction = () => {
             setPredictionResult(null); // 멤버 변경 시 예측 결과 초기화
             setChartData(null); // 멤버 변경 시 차트 초기화
         }} defaultValue="">
-          <option value="" disabled>-- 회원을 선택하세요 --</option>
+          <option value="" disabled>-- 프로필을 선택하세요 --</option>
           {members.map(m => (
             <option key={m.id} value={m.id}>{m.name} ({m.gender === 'male' ? '남' : '여'})</option>
           ))}
