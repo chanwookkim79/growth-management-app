@@ -198,49 +198,50 @@ const DataBackup = () => {
   if (loading) return <p>데이터를 불러오는 중...</p>;
 
   return (
-    <div className="data-backup-container">
-      <div className="backup-actions">
-        <button onClick={handleBackup} disabled={loading}>
-          {loading ? '백업 진행 중...' : '전체 데이터 백업'}
-        </button>
+    <div className="backup-container">
+      <h2>데이터 관리</h2>
+      
+      <div className="backup-info">
+        <p><strong>{members.length}개</strong>의 프로필에 대한 데이터가 있습니다.</p>
+        <p>데이터를 안전하게 관리하기 위해 주기적으로 백업하는 것을 권장합니다.</p>
+      </div>
 
+      <div className="backup-actions">
+        {/* 전체 데이터 백업 */}
+        <div className="action-card">
+          <h3>전체 데이터 백업</h3>
+          <p>모든 프로필과 성장 기록을 하나의 JSON 파일로 다운로드합니다.</p>
+          <button onClick={handleBackup} className="backup-btn" disabled={members.length === 0}>
+            JSON 백업 다운로드
+          </button>
+          {backupStatus && <p className="status-message">{backupStatus}</p>}
+        </div>
+
+        {/* 데이터 복원 */}
         <div className="action-card">
           <h3>데이터 복원</h3>
           <p>이전에 백업한 JSON 파일을 업로드하여 데이터를 복원합니다.</p>
-          <input
-            type="file"
-            accept=".json"
-            onChange={handleRestore}
-            id="restore-file"
-            style={{ display: 'none' }}
-          />
-          <label htmlFor="restore-file" className="restore-btn">
-            파일 선택하여 복원
-          </label>
+          <input type="file" id="restore" onChange={handleRestore} style={{ display: 'none' }} accept=".json" />
+          <label htmlFor="restore" className="restore-btn">파일 선택하여 복원</label>
           {restoreStatus && <p className="status-message">{restoreStatus}</p>}
         </div>
 
+        {/* CSV 내보내기 */}
         <div className="action-card">
           <h3>CSV 내보내기</h3>
-          <p>모든 성장 데이터를 CSV 형식으로 내보냅니다.</p>
-          <button 
-            onClick={handleExportCSV} 
-            className="export-btn"
-            disabled={members.length === 0}
-          >
+          <p>모든 성장 데이터를 분석하기 쉬운 CSV 형식으로 내보냅니다.</p>
+          <button onClick={handleExportCSV} className="export-btn" disabled={members.length === 0}>
             CSV 다운로드
           </button>
         </div>
       </div>
 
       <div className="backup-tips">
-        <h3>백업 및 복원 가이드</h3>
+        <h3>💡 데이터 관리 팁</h3>
         <ul>
-          <li>정기적으로 데이터를 백업하여 안전하게 보관하세요.</li>
-          <li>백업 파일은 안전한 곳에 보관하세요.</li>
-          <li>복원 시 기존 데이터가 모두 삭제되므로 주의하세요.</li>
-          <li>CSV 파일은 Excel에서 열어서 분석할 수 있습니다.</li>
-          <li>백업 파일은 다른 사용자와 공유하지 마세요.</li>
+          <li><strong>백업:</strong> 정기적으로 데이터를 백업하여 소중한 기록을 안전하게 보관하세요.</li>
+          <li><strong>복원:</strong> 기기를 변경하거나 데이터에 문제가 발생했을 때 백업 파일로 복원할 수 있습니다.</li>
+          <li><strong>CSV:</strong> CSV 파일은 Excel 등 다양한 프로그램에서 열어 데이터를 직접 분석하거나 다른 용도로 활용할 수 있습니다.</li>
         </ul>
       </div>
     </div>
