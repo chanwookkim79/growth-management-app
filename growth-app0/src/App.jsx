@@ -91,7 +91,7 @@ function App() {
     <AlertProvider>
       <BrowserRouter>
         <AppContent />
-      </BrowserRouter>
+    </BrowserRouter>
     </AlertProvider>
   );
 }

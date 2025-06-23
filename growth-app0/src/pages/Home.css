@@ -114,14 +114,47 @@
 
 @media (max-width: 480px) {
   .home-header {
-    padding: 2rem 1rem;
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    margin-bottom: 1.2rem;
   }
 
   .home-header h1 {
-    font-size: 2rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .home-header .subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .home-header .cta-button {
+    padding: 10px 16px;
+    font-size: 1rem;
+    border-radius: 7px;
+  }
+
+  .features-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
   }
 
   .features-grid {
     grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .feature-card {
+    padding: 1.1rem 0.8rem;
+    border-radius: 8px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    font-size: 0.95rem;
   }
 } 

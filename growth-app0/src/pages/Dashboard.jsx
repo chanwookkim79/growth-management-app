@@ -40,7 +40,6 @@ const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
-  const [selectedMember, setSelectedMember] = useState(null);
   const [selectedMemberId, setSelectedMemberId] = useState(null);
   const [chartData, setChartData] = useState(null);
   const [pivotedTableData, setPivotedTableData] = useState(null);
@@ -72,7 +71,6 @@ const Dashboard = () => {
   // 선택된 프로필의 데이터를 가공하여 차트와 테이블 데이터를 만듭니다.
   useEffect(() => {
     if (!selectedMemberId) {
-      setSelectedMember(null);
       setPivotedTableData(null);
       setChartData(null);
       return;
@@ -162,7 +160,7 @@ const Dashboard = () => {
     plugins: {
       title: {
         display: true,
-        text: selectedMember ? `${selectedMember.name}님의 성장 기록` : '프로필을 선택해주세요',
+        text: selectedMemberId ? '성장 기록' : '프로필을 선택해주세요',
         font: { size: 18 }
       },
       legend: { position: 'top' }
@@ -212,12 +210,13 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <div className="controls-container">
         <div className="member-select-container">
-          <label htmlFor="member-select">프로필 선택: </label>
-          <select 
-            id="member-select" 
-            value={selectedMemberId || ''} 
-            onChange={(e) => setSelectedMemberId(e.target.value)}
-            className="member-select-dropdown"
+          <label htmlFor="member-select">프로필 선택</label>
+          <select
+            id="member-select"
+            value={selectedMemberId || ''}
+            onChange={handleMemberChange}
+            className="form-control member-select-dropdown"
+            required
           >
             <option value="" disabled>-- 프로필을 선택하세요 --</option>
             {members.map(member => (
@@ -227,7 +226,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {selectedMember ? (
+      {selectedMemberId && (
         <div className="content-container">
           <div className="chart-container">
             {chartData ? <Bar options={chartOptions} data={chartData} /> : <p>차트 데이터를 불러오는 중...</p>}
@@ -268,8 +267,6 @@ const Dashboard = () => {
             ) : <p>표시할 데이터가 없습니다.</p>}
           </div>
         </div>
-      ) : (
-        <p className="selection-prompt">프로필을 선택하면 성장 기록을 볼 수 있습니다.</p>
       )}
     </div>
   );

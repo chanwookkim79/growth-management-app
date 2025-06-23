@@ -256,69 +256,156 @@
   }
 }
 
-.growth-prediction-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #f0f2f5;
 }
 
-.growth-prediction-container h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 30px;
+.main-content {
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+}
+
+.growth-prediction-container {
+  width: 100%;
+  max-width: 480px;
+  min-width: 320px;
+  margin: auto;
+  margin-top: 2rem;
+  margin-bottom: 60px;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(102, 126, 234, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.prediction-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 
 .prediction-controls {
+  width: 100%;
+  margin-bottom: 0.7rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
 }
 
-.prediction-controls select,
+.prediction-controls select.form-control,
 .prediction-controls button {
-  padding: 10px 15px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+  max-width: 320px;
 }
 
 .prediction-controls button {
-  background-color: #007bff;
+  width: 100%;
+  padding: 12px;
+  background-color: #667eea;
   color: white;
-  border-color: #007bff;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  box-shadow: none;
 }
 
-.prediction-controls button:hover {
-  background-color: #0056b3;
+.prediction-controls button:hover:not(:disabled) {
+  background-color: #5a67d8;
 }
 
 .prediction-controls button:disabled {
   background-color: #ccc;
+  color: #b0b0b0;
   cursor: not-allowed;
 }
 
-.prediction-result {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
+.prediction-result-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.2rem 1.2rem 1rem 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
-.prediction-result h3 {
-  color: #007bff;
-  margin-bottom: 15px;
+.prediction-result-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.7rem;
 }
 
-.prediction-result p {
-  font-size: 18px;
-  line-height: 1.6;
+.prediction-result-card p {
+  font-size: 1.05rem;
+  margin: 0.2rem 0;
+}
+
+.chart-card {
+  width: 100%;
+  height: 320px;
+  margin: 0;
+  background: #f6f8fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.chartjs-title, .chart-title, .chart-card .chart-title, .chart-card .chartjs-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .growth-prediction-container {
+    max-width: 98vw;
+    padding: 1rem;
+    gap: 0.7rem;
+  }
+  .prediction-card {
+    gap: 1.2rem;
+    padding: 0;
+  }
+  .chart-card {
+    height: 180px;
+    padding: 0.3rem;
+  }
+  .chartjs-title, .chart-title, .chart-card .chart-title, .chart-card .chartjs-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .growth-prediction-container {
+    padding: 0.5rem 0.1rem;
+    margin: 0.5rem 0;
+    border-radius: 6px;
+  }
+  .prediction-card {
+    gap: 0.7rem;
+  }
+  .chart-card {
+    min-height: 180px;
+    padding: 0.5rem 0.1rem 0.5rem 0.1rem;
+    border-radius: 6px;
+    margin-top: 0.7rem;
+  }
 } 

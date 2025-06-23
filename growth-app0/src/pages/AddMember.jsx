@@ -33,8 +33,8 @@ const AddMember = () => {
       if (!snapshot.empty) {
         showAlert('이미 동일한 이름의 프로필이 존재합니다.');
         setLoading(false);
-        return;
-      }
+      return;
+    }
 
       const heightInMeters = Number(height) / 100;
       const bmiValue = (Number(weight) / (heightInMeters * heightInMeters)).toFixed(2);
