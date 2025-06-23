@@ -1,0 +1,159 @@
+{
+  "userId": "UPULRJ8n9afr1cb9TupjIX7b6903",
+  "timestamp": "2025-06-23T14:41:29.621Z",
+  "version": "1.0",
+  "members": [
+    {
+      "id": "1lUJNDgj8dBTCmVWwNzm",
+      "growthData": [],
+      "initialData": {
+        "weight": 34,
+        "date": "2025-06-21 20:51:53",
+        "height": 138.5,
+        "bmi": 17.72
+      },
+      "gender": "male",
+      "birthdate": "2015-04-18T00:00:00.000Z",
+      "dob": "2015-04-18",
+      "data": [
+        {
+          "bmi": 17.72,
+          "체중(kg)": 34,
+          "date": "2025-06-21T11:51:53.000Z",
+          "키(cm)": 138.5
+        }
+      ],
+      "name": "김현우",
+      "userId": "UPULRJ8n9afr1cb9TupjIX7b6903"
+    },
+    {
+      "id": "B0D4t4eLrkCT6IpNioQB",
+      "data": [
+        {
+          "date": "2025-06-21T07:28:10.000Z",
+          "체중(kg)": 74,
+          "bmi": 24.44,
+          "키(cm)": 174
+        }
+      ],
+      "name": "김찬욱",
+      "dob": "1979-02-28",
+      "birthdate": "1979-02-28T00:00:00.000Z",
+      "gender": "male",
+      "growthData": [
+        {
+          "bmi": 24.44,
+          "weight": 74,
+          "date": "2025-06-23 03:05:47",
+          "height": 174
+        },
+        {
+          "bmi": 24.44,
+          "date": "2025-06-23 03:07:35",
+          "weight": 74,
+          "height": 174
+        },
+        {
+          "height": 174,
+          "date": "2025-06-23 03:12:03",
+          "weight": 74,
+          "bmi": 24.44
+        },
+        {
+          "date": "2025-06-23 03:24:49",
+          "height": 174,
+          "weight": 72,
+          "bmi": 23.78
+        },
+        {
+          "date": "2025-06-23 04:47:05",
+          "height": 173,
+          "bmi": 24.725182932941294,
+          "weight": 74
+        },
+        {
+          "weight": 71,
+          "bmi": 23.183673469387756,
+          "date": "2025-06-23 04:58:43",
+          "height": 175
+        }
+      ],
+      "initialData": {
+        "height": 174,
+        "weight": 74,
+        "date": "2025-06-21 16:28:10",
+        "bmi": 24.44
+      },
+      "userId": "UPULRJ8n9afr1cb9TupjIX7b6903"
+    },
+    {
+      "id": "XqCUl5vQjJna5aAK3unp",
+      "dob": "2017-07-24",
+      "initialData": {
+        "bmi": 21.56,
+        "weight": 37,
+        "height": 131,
+        "date": "2025-06-21 21:45:21"
+      },
+      "birthdate": "2017-07-24T00:00:00.000Z",
+      "data": [
+        {
+          "bmi": 21.56,
+          "date": "2025-06-21T12:45:21.000Z",
+          "체중(kg)": 37,
+          "키(cm)": 131
+        }
+      ],
+      "userId": "UPULRJ8n9afr1cb9TupjIX7b6903",
+      "name": "김시안",
+      "gender": "male",
+      "growthData": []
+    },
+    {
+      "id": "gXlkXLE7GCNKVrUn4H6z",
+      "dob": "1981-07-05",
+      "birthdate": "1981-07-05T00:00:00.000Z",
+      "gender": "female",
+      "name": "김지영",
+      "data": [
+        {
+          "체중(kg)": 49.6,
+          "키(cm)": 155,
+          "bmi": 20.65,
+          "date": "2025-06-21T12:47:36.000Z"
+        }
+      ],
+      "growthData": [],
+      "userId": "UPULRJ8n9afr1cb9TupjIX7b6903",
+      "initialData": {
+        "height": 155,
+        "date": "2025-06-21 21:47:36",
+        "bmi": 20.65,
+        "weight": 49.6
+      }
+    },
+    {
+      "id": "xMPu03dLTiLR7msWhFCg",
+      "name": "김승아",
+      "dob": "2020-02-21",
+      "userId": "UPULRJ8n9afr1cb9TupjIX7b6903",
+      "growthData": [],
+      "gender": "female",
+      "data": [
+        {
+          "date": "2025-06-21T12:46:34.000Z",
+          "bmi": 16.17,
+          "키(cm)": 105.5,
+          "체중(kg)": 18
+        }
+      ],
+      "birthdate": "2020-02-21T00:00:00.000Z",
+      "initialData": {
+        "bmi": 16.17,
+        "date": "2025-06-21 21:46:34",
+        "height": 105.5,
+        "weight": 18
+      }
+    }
+  ]
+}
