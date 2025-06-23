@@ -48,12 +48,12 @@ const ManageMembers = () => {
   // 삭제 확인
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
-    try {
+      try {
       await deleteDoc(doc(db, "members", deleteTarget.id));
       showAlert('프로필이 삭제되었습니다.');
-      fetchMembers();
-    } catch (error) {
-      console.error("Error deleting document: ", error);
+        fetchMembers();
+      } catch (error) {
+        console.error("Error deleting document: ", error);
       showAlert('프로필 삭제에 실패했습니다.');
     } finally {
       setShowDeleteModal(false);
@@ -104,7 +104,7 @@ const ManageMembers = () => {
     if (!member) return [];
     const allData = [...[member.initialData], ...(member.growthData || [])]
       .sort((a, b) => a.date.toMillis() - b.date.toMillis());
-
+    
     return allData.map((data, index) => {
       let heightChange = '-';
       let weightChange = '-';
@@ -195,15 +195,15 @@ const ManageMembers = () => {
               <div className="modal-section">
                 
                 <div className="edit-form-grid">
-                  <div className="form-group">
-                    <label>이름</label>
+                    <div className="form-group">
+                      <label>이름</label>
                     <input type="text" value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} required />
-                  </div>
-                  <div className="form-group">
-                    <label>생년월일</label>
+                    </div>
+                    <div className="form-group">
+                      <label>생년월일</label>
                     <input type="date" value={editForm.dob} onChange={(e) => setEditForm({...editForm, dob: e.target.value})} required />
                   </div>
-                  <div className="form-group">
+                    <div className="form-group">
                     <label>성별</label>
                     <div className="radio-buttons">
                       <label><input type="radio" value="male" checked={editForm.gender === 'male'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 남</label>
@@ -248,13 +248,13 @@ const ManageMembers = () => {
               </div>
 
               <div className="modal-actions-bottom">
-                <button type="submit" className="action-btn save-btn">저장</button>
+                    <button type="submit" className="action-btn save-btn">저장</button>
                 <button type="button" onClick={closeModal} className="action-btn cancel-btn">취소</button>
-              </div>
-            </form>
+                  </div>
+                </form>
             <button onClick={closeModal} className="modal-close-btn">&times;</button>
-          </div>
-        </div>
+                    </div>
+                  </div>
       )}
 
       {/* 프로필 목록 테이블 */}

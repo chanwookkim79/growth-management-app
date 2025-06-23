@@ -1,12 +1,20 @@
 /* Styles for AddData component */
 
 .add-data-container {
-  max-width: 500px;
-  margin: 2rem auto;
+  width: 100%;
+  max-width: 800px;
+  min-width: 320px;
+  margin: auto;
+  margin-top: 2rem;
+  margin-bottom: 60px;
   padding: 2rem;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(102, 126, 234, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
 .add-data-container select {
@@ -86,9 +94,18 @@
 }
 
 /* For very narrow screens to prevent scrolling */
+@media (max-width: 768px) {
+  .add-data-container {
+    max-width: 98vw;
+    padding: 1rem;
+    gap: 0.7rem;
+  }
+}
 @media (max-width: 480px) {
   .add-data-container {
-    padding: 1.5rem 1rem;
+    padding: 0.5rem 0.1rem;
+    margin: 0.5rem 0;
+    border-radius: 6px;
   }
 
   .add-data-form .form-group {
