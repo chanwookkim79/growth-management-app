@@ -17,6 +17,7 @@ const GrowthPrediction = () => {
   const [predictionResult, setPredictionResult] = useState(null);
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // 프로필 목록 불러오기
   useEffect(() => {
@@ -31,97 +32,105 @@ const GrowthPrediction = () => {
 
   const handlePredict = (memberParam) => {
     const member = memberParam || selectedMember;
+    setErrorMsg("");
     if (!member) {
-      alert("먼저 프로필을 선택해주세요.");
-      return;
-    }
-
-    const allData = [
-      member.initialData,
-      ...(member.growthData || [])
-    ].sort((a, b) => a.date.toMillis() - b.date.toMillis());
-
-    if (allData.length < 2) {
-      alert("예측을 위한 데이터가 부족합니다. (최소 2개 이상의 기록 필요)");
+      setErrorMsg("먼저 프로필을 선택해주세요.");
       setPredictionResult(null);
       setChartData(null);
       return;
     }
+    try {
+      const allData = [
+        member.initialData,
+        ...(member.growthData || [])
+      ].sort((a, b) => a.date.toMillis() - b.date.toMillis());
 
-    setLoading(true);
+      if (allData.length < 2) {
+        setErrorMsg("예측을 위한 데이터가 부족합니다. (최소 2개 이상의 기록 필요)");
+        setPredictionResult(null);
+        setChartData(null);
+        return;
+      }
 
-    // 나이 계산 (개월 수)
-    const birthDate = new Date(member.dob);
-    const getAgeInMonths = (date) => {
-      const today = new Date(date);
-      let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
-      months -= birthDate.getMonth();
-      months += today.getMonth();
-      return months <= 0 ? 0 : months;
-    };
+      setLoading(true);
 
-    // 데이터 포인트 생성 (x: 나이(개월), y: 값)
-    const heightDataPoints = allData.map(d => ({ x: getAgeInMonths(d.date.toDate()), y: d.height }));
-    const weightDataPoints = allData.map(d => ({ x: getAgeInMonths(d.date.toDate()), y: d.weight }));
+      // 나이 계산 (개월 수)
+      const birthDate = new Date(member.dob);
+      const getAgeInMonths = (date) => {
+        const today = new Date(date);
+        let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
+        months -= birthDate.getMonth();
+        months += today.getMonth();
+        return months <= 0 ? 0 : months;
+      };
 
-    // 선형 회귀 함수
-    const linearRegression = (data) => {
-        const n = data.length;
-        if (n === 0) return { slope: 0, intercept: 0 };
-        let sum_x = 0, sum_y = 0, sum_xy = 0, sum_xx = 0;
-        data.forEach(p => {
-            sum_x += p.x;
-            sum_y += p.y;
-            sum_xy += p.x * p.y;
-            sum_xx += p.x * p.x;
-        });
-        const slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
-        const intercept = (sum_y - slope * sum_x) / n;
-        return { slope, intercept };
-    };
+      // 데이터 포인트 생성 (x: 나이(개월), y: 값)
+      const heightDataPoints = allData.map(d => ({ x: getAgeInMonths(d.date && d.date.toDate ? d.date.toDate() : new Date(d.date)), y: d.height }));
+      const weightDataPoints = allData.map(d => ({ x: getAgeInMonths(d.date && d.date.toDate ? d.date.toDate() : new Date(d.date)), y: d.weight }));
 
-    const heightModel = linearRegression(heightDataPoints);
-    const weightModel = linearRegression(weightDataPoints);
+      // 선형 회귀 함수
+      const linearRegression = (data) => {
+          const n = data.length;
+          if (n === 0) return { slope: 0, intercept: 0 };
+          let sum_x = 0, sum_y = 0, sum_xy = 0, sum_xx = 0;
+          data.forEach(p => {
+              sum_x += p.x;
+              sum_y += p.y;
+              sum_xy += p.x * p.y;
+              sum_xx += p.x * p.x;
+          });
+          const slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
+          const intercept = (sum_y - slope * sum_x) / n;
+          return { slope, intercept };
+      };
 
-    const lastAge = getAgeInMonths(allData[allData.length - 1].date.toDate());
-    const futureAge = lastAge + predictionPeriod;
+      const heightModel = linearRegression(heightDataPoints);
+      const weightModel = linearRegression(weightDataPoints);
 
-    const predictedHeight = heightModel.slope * futureAge + heightModel.intercept;
-    const predictedWeight = weightModel.slope * futureAge + weightModel.intercept;
+      const lastAge = getAgeInMonths(allData[allData.length - 1].date && allData[allData.length - 1].date.toDate ? allData[allData.length - 1].date.toDate() : new Date(allData[allData.length - 1].date));
+      const futureAge = lastAge + predictionPeriod;
 
-    setPredictionResult({
-        predictedHeight: predictedHeight.toFixed(1),
-        predictedWeight: predictedWeight.toFixed(1),
-    });
+      const predictedHeight = heightModel.slope * futureAge + heightModel.intercept;
+      const predictedWeight = weightModel.slope * futureAge + weightModel.intercept;
 
-    // 표준 성장 데이터 선택
-    const standardHeightData = member.gender === 'male' ? standardHeightMale : standardHeightFemale;
+      setPredictionResult({
+          predictedHeight: predictedHeight.toFixed(1),
+          predictedWeight: predictedWeight.toFixed(1),
+      });
 
-    // 차트 데이터 구성
-    setChartData({
-        labels: standardHeightData.map(d => d.age_months), // X축은 표준 데이터의 나이(개월)
-      datasets: [
-        {
-                label: `${member.name}님의 키`,
-                data: heightDataPoints, // {x, y} 객체의 배열
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                type: 'scatter',
-                pointRadius: 5,
-        },
-        {
-                label: '표준 키 (50th)',
-                data: standardHeightData.map(d => ({ x: d.age_months, y: d.height_cm })),
-                borderColor: 'rgb(54, 162, 235)',
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                type: 'line',
-                pointRadius: 0,
-                borderWidth: 2,
-        }
-      ]
-    });
+      // 표준 성장 데이터 선택
+      const standardHeightData = member.gender === 'male' ? standardHeightMale : standardHeightFemale;
 
-    setLoading(false);
+      // 차트 데이터 구성
+      setChartData({
+          labels: standardHeightData.map(d => d.age_months), // X축은 표준 데이터의 나이(개월)
+        datasets: [
+          {
+                  label: `${member.name}님의 키`,
+                  data: heightDataPoints, // {x, y} 객체의 배열
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                  type: 'scatter',
+                  pointRadius: 5,
+          },
+          {
+                  label: '표준 키 (50th)',
+                  data: standardHeightData.map(d => ({ x: d.age_months, y: d.height_cm })),
+                  borderColor: 'rgb(54, 162, 235)',
+                  backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                  type: 'line',
+                  pointRadius: 0,
+                  borderWidth: 2,
+          }
+        ]
+      });
+      setLoading(false);
+    } catch (err) {
+      setErrorMsg("데이터를 불러오거나 처리하는 중 오류가 발생했습니다. 성장 기록, 생년월일, 성별, 날짜 형식 등을 확인해주세요.");
+      setPredictionResult(null);
+      setChartData(null);
+      setLoading(false);
+    }
   };
 
   const chartOptions = {
@@ -177,9 +186,13 @@ const GrowthPrediction = () => {
         
         {/* 예측 결과 카드 삭제됨 */}
 
-        {chartData && (
+        {chartData ? (
           <div className="chart-card" style={{height: '60vw', minHeight: 420, maxHeight: 600}}>
             <Line options={chartOptions} data={chartData} />
+          </div>
+        ) : (
+          <div className="chart-card chart-card-empty" style={{height: '60vw', minHeight: 420, maxHeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 18}}>
+            {errorMsg || '프로필을 선택하면 성장 그래프가 표시됩니다.'}
           </div>
         )}
       </div>
