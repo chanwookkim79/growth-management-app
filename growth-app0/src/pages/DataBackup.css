@@ -226,15 +226,25 @@
 }
 
 .backup-container.compact-backup-container {
+  height: 70vh;
+  max-height: 756px;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
   max-width: 700px;
-  margin: 2rem auto;
-  padding: 1.5rem 1rem;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.08);
+  min-width: 320px;
+  margin: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0 0;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(102, 126, 234, 0.08);
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
+  gap: 2rem;
 }
 
 .backup-container.compact-backup-container h2 {
@@ -289,4 +299,12 @@
     font-size: 0.98rem;
     padding: 0.7rem 0;
   }
+}
+
+.backup-actions-vertical, .backup-info-compact {
+  width: 100%;
+  height: 100%;
+  padding-left: 20%;
+  padding-right: 20%;
+  box-sizing: border-box;
 } 
