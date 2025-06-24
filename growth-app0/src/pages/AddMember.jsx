@@ -63,35 +63,35 @@ const AddMember = () => {
   };
 
   return (
-    <div className="add-member-container">
-      <form onSubmit={handleSubmit} className="add-member-form">
+    <div className="common-card-container">
+      <form onSubmit={handleSubmit} className="common-card-content">
         <h2>프로필 추가</h2>
-        <div className="form-group">
-          <label htmlFor="name">이름</label>
+        <div className="common-form-group">
+          <label htmlFor="name" className="common-form-label">이름</label>
           <input
             id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="form-input"
+            className="common-form-input"
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="dob">생년월일</label>
+        <div className="common-form-group">
+          <label htmlFor="dob" className="common-form-label">생년월일</label>
           <input
             id="dob"
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
-            className="form-input"
+            className="common-form-input"
             required
           />
         </div>
-        <div className="form-group">
-          <label>성별</label>
-          <div className="radio-buttons">
-            <label>
+        <div className="common-form-group">
+          <label className="common-form-label">성별</label>
+          <div className="common-form-radio-group">
+            <label className="common-form-radio-label">
               <input
                 type="radio"
                 value="male"
@@ -101,7 +101,7 @@ const AddMember = () => {
               />
               남
             </label>
-            <label>
+            <label className="common-form-radio-label">
               <input
                 type="radio"
                 value="female"
@@ -113,29 +113,29 @@ const AddMember = () => {
             </label>
           </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="height">키 (cm)</label>
+        <div className="common-form-group">
+          <label htmlFor="height" className="common-form-label">키 (cm)</label>
           <input
             id="height"
             type="number"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            className="form-input"
+            className="common-form-input"
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="weight">몸무게 (kg)</label>
+        <div className="common-form-group">
+          <label htmlFor="weight" className="common-form-label">몸무게 (kg)</label>
           <input
             id="weight"
             type="number"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
-            className="form-input"
+            className="common-form-input"
             required
           />
         </div>
-        <button type="submit" className="submit-btn" disabled={loading}>
+        <button type="submit" className="common-form-button" disabled={loading}>
           {loading ? '등록 중...' : '등록'}
         </button>
       </form>

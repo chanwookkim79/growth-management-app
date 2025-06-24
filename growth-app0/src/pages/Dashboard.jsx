@@ -19,6 +19,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { format } from 'date-fns';
 import './Dashboard.css';
+import '../styles/form-styles.css';
 
 // Vercel 재배포를 위한 주석
 // Chart.js에 필요한 요소들을 등록합니다.
@@ -205,15 +206,15 @@ const Dashboard = () => {
   if (loading) return <p>프로필 목록을 불러오는 중...</p>;
 
   return (
-    <div className="dashboard-container">
-      <div className="controls-container">
-        <div className="form-group">
-          <label htmlFor="member-select">프로필 선택</label>
+    <div className="common-card-container">
+      <div className="common-card-content">
+        <div className="common-form-group">
+          <label htmlFor="member-select" className="common-form-label">프로필 선택</label>
           <select
             id="member-select"
             value={selectedMemberId || ''}
             onChange={handleMemberChange}
-            className="form-control"
+            className="common-form-select"
             required
           >
             <option value="">-- 프로필을 선택하세요 --</option>
@@ -224,49 +225,48 @@ const Dashboard = () => {
             ))}
           </select>
         </div>
-      </div>
-
-      {selectedMemberId && (
-        <div className="content-container">
-          <div className="chart-container">
-            {chartData ? <Bar options={chartOptions} data={chartData} /> : <p>차트 데이터를 불러오는 중...</p>}
-          </div>
-          <div className="data-table-container">
-            {pivotedTableData ? (
-              <div className="table-wrapper">
-                <table className="growth-table">
-                  <thead>
-                    <tr>
-                      <th>항목</th>
-                      {pivotedTableData.dates.map(date => <th key={date}>{date}</th>)}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pivotedTableData.metrics.map(metric => (
-                      <tr key={metric.label}>
-                        <td>{metric.label}</td>
-                        {metric.values.map((value, index) => (
-                          <td key={index}>
-                            {metric.label.includes('변화') ? (
-                              renderChange(value)
-                            ) : metric.label === 'BMI' ? (
-                              <>
-                                {value} ({getBmiEvaluation(value)})
-                              </>
-                            ) : (
-                              value
-                            )}
-                          </td>
-                        ))}
+        {selectedMemberId && (
+          <div className="content-container">
+            <div className="chart-container">
+              {chartData ? <Bar options={chartOptions} data={chartData} /> : <p>차트 데이터를 불러오는 중...</p>}
+            </div>
+            <div className="data-table-container">
+              {pivotedTableData ? (
+                <div className="table-wrapper">
+                  <table className="growth-table">
+                    <thead>
+                      <tr>
+                        <th>항목</th>
+                        {pivotedTableData.dates.map(date => <th key={date}>{date}</th>)}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : <p>표시할 데이터가 없습니다.</p>}
+                    </thead>
+                    <tbody>
+                      {pivotedTableData.metrics.map(metric => (
+                        <tr key={metric.label}>
+                          <td>{metric.label}</td>
+                          {metric.values.map((value, index) => (
+                            <td key={index}>
+                              {metric.label.includes('변화') ? (
+                                renderChange(value)
+                              ) : metric.label === 'BMI' ? (
+                                <>
+                                  {value} ({getBmiEvaluation(value)})
+                                </>
+                              ) : (
+                                value
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : <p>표시할 데이터가 없습니다.</p>}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

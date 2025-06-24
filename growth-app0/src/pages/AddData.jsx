@@ -103,11 +103,11 @@ const AddData = () => {
   }
 
   return (
-    <div className="add-data-container">
-      <form className="add-data-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="member-select">프로필 선택</label>
-          <select id="member-select" value={selectedMember} onChange={(e) => setSelectedMember(e.target.value)} className="form-control" required>
+    <div className="common-card-container">
+      <form className="common-card-content" onSubmit={handleSubmit}>
+        <div className="common-form-group">
+          <label htmlFor="member-select" className="common-form-label">프로필 선택</label>
+          <select id="member-select" value={selectedMember} onChange={(e) => setSelectedMember(e.target.value)} className="common-form-select" required>
             <option value="">-- 프로필을 선택하세요 --</option>
             {members.map(member => (
               <option key={member.id} value={member.id}>
@@ -116,25 +116,25 @@ const AddData = () => {
             ))}
           </select>
         </div>
-        <div className="form-group">
-          <label htmlFor="height">키 (cm)</label>
+        <div className="common-form-group">
+          <label htmlFor="height" className="common-form-label">키 (cm)</label>
           <input
             type="number"
             id="height"
             name="height"
-            className="form-input"
+            className="common-form-input"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
             placeholder="키를 숫자로 입력하세요"
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="weight">몸무게 (kg)</label>
+        <div className="common-form-group">
+          <label htmlFor="weight" className="common-form-label">몸무게 (kg)</label>
           <input
             type="number"
             id="weight"
             name="weight"
-            className="form-input"
+            className="common-form-input"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             placeholder="몸무게를 숫자로 입력하세요"
@@ -146,7 +146,7 @@ const AddData = () => {
           </div>
         )}
         <div className="button-container">
-          <button type="submit" className="submit-btn" disabled={!selectedMember || !height || !weight || loading}>
+          <button type="submit" className="common-form-button" disabled={!selectedMember || !height || !weight || loading}>
             {loading ? '입력 중...' : '데이터 입력'}
           </button>
         </div>

@@ -3,6 +3,7 @@ import { db } from '../firebase/config';
 import { collection, getDocs } from 'firebase/firestore';
 import { format, differenceInMonths, parseISO } from 'date-fns';
 import './ManageMembers.css'; // 기존 스타일 재사용
+import '../styles/form-styles.css';
 
 const ManageAllMembers = () => {
   const [allMembers, setAllMembers] = useState([]);
@@ -37,43 +38,45 @@ const ManageAllMembers = () => {
   }, []);
 
   if (loading) {
-    return <div className="manage-members-container">전체 프로필 목록을 불러오는 중...</div>;
+    return <div className="common-card-container"><div className="common-card-content">전체 프로필 목록을 불러오는 중...</div></div>;
   }
 
   if (error) {
-    return <div className="manage-members-container"><p className="error-message">{error}</p></div>;
+    return <div className="common-card-container"><div className="common-card-content"><p className="error-message">{error}</p></div></div>;
   }
 
   return (
-    <div className="manage-members-container">
-      <h2>전체 프로필 관리</h2>
-      <div className="table-responsive">
-        <table className="members-table">
-          <thead>
-            <tr>
-              <th>이름</th>
-              <th>생년월일</th>
-              <th>성별</th>
-              <th>등록자 UID</th>
-              <th>등록일</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allMembers.map(member => (
-              <tr key={member.id}>
-                <td>{member.name}</td>
-                <td>{member.dob}</td>
-                <td>{member.gender === 'male' ? '남' : '여'}</td>
-                <td title={member.userId}>{member.userId.substring(0, 10)}...</td>
-                <td>{member.initialData.date ? format(member.initialData.date.toDate(), 'yyyy-MM-dd') : 'N/A'}</td>
+    <div className="common-card-container">
+      <div className="common-card-content">
+        <h2>전체 프로필 관리</h2>
+        <div className="table-responsive">
+          <table className="members-table">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>생년월일</th>
+                <th>성별</th>
+                <th>등록자 UID</th>
+                <th>등록일</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {allMembers.map(member => (
+                <tr key={member.id}>
+                  <td>{member.name}</td>
+                  <td>{member.dob}</td>
+                  <td>{member.gender === 'male' ? '남' : '여'}</td>
+                  <td title={member.userId}>{member.userId.substring(0, 10)}...</td>
+                  <td>{member.initialData.date ? format(member.initialData.date.toDate(), 'yyyy-MM-dd') : 'N/A'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {allMembers.length === 0 && (
+          <p className="no-members-message">등록된 프로필이 없습니다.</p>
+        )}
       </div>
-      {allMembers.length === 0 && (
-        <p className="no-members-message">등록된 프로필이 없습니다.</p>
-      )}
     </div>
   );
 };

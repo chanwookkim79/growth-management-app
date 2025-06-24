@@ -4,6 +4,7 @@ import { db } from '../firebase/config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Line } from 'react-chartjs-2';
 import './GrowthPrediction.css';
+import '../styles/form-styles.css';
 // 표준 성장 데이터 import
 import standardHeightMale from '../data/standard_height_male.json';
 import standardHeightFemale from '../data/standard_height_female.json';
@@ -169,11 +170,12 @@ const GrowthPrediction = () => {
   };
 
   return (
-    <div className="growth-prediction-container">
-      <div className="prediction-card">
-        <div className="prediction-controls">
+    <div className="common-card-container">
+      <div className="common-card-content">
+        <div className="common-form-group">
+          <label className="common-form-label">프로필 선택</label>
           <select
-            className="form-control"
+            className="common-form-select"
             onChange={(e) => {
               const member = members.find(m => m.id === e.target.value);
               setSelectedMember(member);
@@ -182,6 +184,7 @@ const GrowthPrediction = () => {
               if (member) handlePredict(member);
             }}
             defaultValue=""
+            required
           >
             <option value="" disabled>-- 프로필을 선택하세요 --</option>
             {members.map(m => (

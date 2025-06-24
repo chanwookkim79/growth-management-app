@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from 'fireb
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 import './DataBackup.css';
+import '../styles/form-styles.css';
 
 const DataBackup = () => {
   const { currentUser } = useContext(AuthContext);
@@ -198,23 +199,25 @@ const DataBackup = () => {
   if (loading) return <p>데이터를 불러오는 중...</p>;
 
   return (
-    <div className="backup-container compact-backup-container">
-      <h2>데이터 백업/복원</h2>
-      <div className="backup-actions-vertical">
-        <button onClick={handleBackup} className="backup-btn" disabled={members.length === 0}>
-          JSON 백업
-        </button>
-        {backupStatus && <p className="status-message">{backupStatus}</p>}
-        <label htmlFor="restore" className="restore-btn" style={{marginTop: '1rem'}}>복원</label>
-        <input type="file" id="restore" onChange={handleRestore} style={{ display: 'none' }} accept=".json" />
-        {restoreStatus && <p className="status-message">{restoreStatus}</p>}
-        <button onClick={handleExportCSV} className="export-btn" style={{marginTop: '1rem'}} disabled={members.length === 0}>
-          CSV 내보내기
-        </button>
-      </div>
-      <div className="backup-info-compact">
-        <p>프로필: <strong>{members.length}</strong>개</p>
-        <p style={{fontSize: '0.95rem', color: '#888'}}>정기 백업을 권장합니다.</p>
+    <div className="common-card-container">
+      <div className="common-card-content">
+        <h2>데이터 백업/복원</h2>
+        <div className="backup-actions-vertical">
+          <button onClick={handleBackup} className="common-form-button" disabled={members.length === 0}>
+            JSON 백업
+          </button>
+          {backupStatus && <p className="status-message">{backupStatus}</p>}
+          <label htmlFor="restore" className="common-form-button" style={{marginTop: '1rem'}}>복원</label>
+          <input type="file" id="restore" onChange={handleRestore} style={{ display: 'none' }} accept=".json" />
+          {restoreStatus && <p className="status-message">{restoreStatus}</p>}
+          <button onClick={handleExportCSV} className="common-form-button" style={{marginTop: '1rem'}} disabled={members.length === 0}>
+            CSV 내보내기
+          </button>
+        </div>
+        <div className="backup-info-compact">
+          <p>프로필: <strong>{members.length}</strong>개</p>
+          <p style={{fontSize: '0.95rem', color: '#888'}}>정기 백업을 권장합니다.</p>
+        </div>
       </div>
     </div>
   );

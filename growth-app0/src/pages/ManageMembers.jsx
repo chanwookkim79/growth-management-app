@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, doc, deleteDoc, updateDoc } from 'fi
 import { format, differenceInMonths, parseISO } from 'date-fns';
 import './ManageMembers.css';
 import { useAlert } from '../context/AlertContext';
+import '../styles/form-styles.css';
 
 const ManageMembers = () => {
   const { currentUser } = useContext(AuthContext);
@@ -170,95 +171,95 @@ const ManageMembers = () => {
   if (loading) return <div>프로필 목록을 불러오는 중...</div>;
 
   return (
-    <div className="manage-members-container">
-      {/* 삭제 확인 모달 */}
-      {showDeleteModal && deleteTarget && (
-        <div className="modal-backdrop">
-          <div className="modal-content">
-            <div style={{ marginBottom: '1.5rem', fontWeight: 500 }}>
-              '{deleteTarget.name}' 프로필을 정말로 삭제하시겠습니까?
-            </div>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-              <button className="action-btn delete-btn" onClick={handleDeleteConfirm}>예</button>
-              <button className="action-btn cancel-btn" onClick={handleDeleteCancel}>아니오</button>
+    <div className="common-card-container">
+      <div className="common-card-content">
+        {/* 삭제 확인 모달 */}
+        {showDeleteModal && deleteTarget && (
+          <div className="modal-backdrop">
+            <div className="modal-content">
+              <div style={{ marginBottom: '1.5rem', fontWeight: 500 }}>
+                '{deleteTarget.name}' 프로필을 정말로 삭제하시겠습니까?
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                <button className="action-btn delete-btn" onClick={handleDeleteConfirm}>예</button>
+                <button className="action-btn cancel-btn" onClick={handleDeleteCancel}>아니오</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {/* 프로필 정보 수정 모달 */}
-      {isModalOpen && selectedMember && (
-        <div className="modal-backdrop" onClick={closeModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h2>{selectedMember.name}님 정보 수정</h2>
-            
-            <form onSubmit={handleEditSubmit} className="modal-form-container">
-              <div className="modal-section">
-                
-                <div className="edit-form-grid">
-                    <div className="form-group">
-                      <label>이름</label>
-                    <input type="text" value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} required />
+        )}
+        {/* 프로필 정보 수정 모달 */}
+        {isModalOpen && selectedMember && (
+          <div className="modal-backdrop" onClick={closeModal}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+              <h2>{selectedMember.name}님 정보 수정</h2>
+              
+              <form onSubmit={handleEditSubmit} className="modal-form-container">
+                <div className="modal-section">
+                  
+                  <div className="edit-form-grid">
+                      <div className="form-group">
+                        <label>이름</label>
+                      <input type="text" value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} required />
+                      </div>
+                      <div className="form-group">
+                        <label>생년월일</label>
+                      <input type="date" value={editForm.dob} onChange={(e) => setEditForm({...editForm, dob: e.target.value})} required />
                     </div>
-                    <div className="form-group">
-                      <label>생년월일</label>
-                    <input type="date" value={editForm.dob} onChange={(e) => setEditForm({...editForm, dob: e.target.value})} required />
-                  </div>
-                    <div className="form-group">
-                    <label>성별</label>
-                    <div className="radio-buttons">
-                      <label><input type="radio" value="male" checked={editForm.gender === 'male'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 남</label>
-                      <label><input type="radio" value="female" checked={editForm.gender === 'female'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 여</label>
+                      <div className="form-group">
+                      <label>성별</label>
+                      <div className="radio-buttons">
+                        <label><input type="radio" value="male" checked={editForm.gender === 'male'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 남</label>
+                        <label><input type="radio" value="female" checked={editForm.gender === 'female'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 여</label>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="modal-section">
-                <h3>전체 성장 기록</h3>
-                <div className="growth-history-table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>측정일</th>
-                        <th>키(cm) (변화)</th>
-                        <th>몸무게(kg) (변화)</th>
-                        <th>BMI</th>
-                        <th>비고</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getProcessedGrowthData(selectedMember).map((record, index) => (
-                        <tr key={record.date.toMillis()}>
-                          <td>{format(record.date.toDate(), 'yyyy-MM-dd')}</td>
-                          <td>{record.height} cm ({renderChange(record.heightChange, 'height')})</td>
-                          <td>{record.weight} kg ({renderChange(record.weightChange, 'weight')})</td>
-                          <td>{parseFloat(record.bmi).toFixed(1)}</td>
-                          <td className="actions-cell">
-                            {record.date.toMillis() !== selectedMember.initialData.date.toMillis() ? (
-                              <button type="button" onClick={() => handleRecordDelete(record)} className="inline-btn delete-btn">삭제</button>
-                            ) : (
-                              <span>-</span>
-                            )}
-                          </td>
+                <div className="modal-section">
+                  <h3>전체 성장 기록</h3>
+                  <div className="growth-history-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>측정일</th>
+                          <th>키(cm) (변화)</th>
+                          <th>몸무게(kg) (변화)</th>
+                          <th>BMI</th>
+                          <th>비고</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {getProcessedGrowthData(selectedMember).map((record, index) => (
+                          <tr key={record.date.toMillis()}>
+                            <td>{format(record.date.toDate(), 'yyyy-MM-dd')}</td>
+                            <td>{record.height} cm ({renderChange(record.heightChange, 'height')})</td>
+                            <td>{record.weight} kg ({renderChange(record.weightChange, 'weight')})</td>
+                            <td>{parseFloat(record.bmi).toFixed(1)}</td>
+                            <td className="actions-cell">
+                              {record.date.toMillis() !== selectedMember.initialData.date.toMillis() ? (
+                                <button type="button" onClick={() => handleRecordDelete(record)} className="inline-btn delete-btn">삭제</button>
+                              ) : (
+                                <span>-</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
 
-              <div className="modal-actions-bottom">
-                    <button type="submit" className="action-btn save-btn">저장</button>
-                <button type="button" onClick={closeModal} className="action-btn cancel-btn">취소</button>
-                  </div>
-                </form>
-            <button onClick={closeModal} className="modal-close-btn">&times;</button>
+                <div className="modal-actions-bottom">
+                      <button type="submit" className="action-btn save-btn">저장</button>
+                  <button type="button" onClick={closeModal} className="action-btn cancel-btn">취소</button>
                     </div>
-                  </div>
-      )}
+                  </form>
+              <button onClick={closeModal} className="modal-close-btn">&times;</button>
+                      </div>
+                    </div>
+        )}
 
-      {/* 프로필 목록 테이블 */}
-      {members.length > 0 ? (
+        {/* 프로필 목록 테이블 */}
         <div className="table-responsive">
           <table className="members-table">
             <thead>
@@ -280,17 +281,18 @@ const ManageMembers = () => {
                   <td data-label="성별">{member.gender === 'male' ? '남' : '여'}</td>
                   <td data-label="등록일">{member.initialData.date ? format(member.initialData.date.toDate(), 'yyyy-MM-dd') : '-'}</td>
                   <td data-label="비고" className="actions-cell">
-                    <button onClick={() => handleEditClick(member)} className="action-btn edit-btn">수정</button>
-                    <button onClick={() => handleDeleteClick(member)} className="action-btn delete-btn">삭제</button>
+                    <button onClick={() => handleEditClick(member)} className="common-form-button" style={{padding: '6px 12px', fontSize: '0.95rem'}}>수정</button>
+                    <button onClick={() => handleDeleteClick(member)} className="common-form-button" style={{padding: '6px 12px', fontSize: '0.95rem', backgroundColor: '#e74c3c'}}>삭제</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      ) : (
-        <p className="no-members-message">등록된 프로필이 없습니다. '프로필 추가' 메뉴에서 새 프로필을 등록해주세요.</p>
-      )}
+        {members.length === 0 && (
+          <p className="no-members-message">등록된 프로필이 없습니다. '프로필 추가' 메뉴에서 새 프로필을 등록해주세요.</p>
+        )}
+      </div>
     </div>
   );
 };
