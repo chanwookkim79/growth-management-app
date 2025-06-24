@@ -192,20 +192,18 @@ const ManageMembers = () => {
           <div className="modal-backdrop" onClick={closeModal}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
               <h2>{selectedMember.name}님 정보 수정</h2>
-              
               <form onSubmit={handleEditSubmit} className="modal-form-container">
                 <div className="modal-section">
-                  
                   <div className="edit-form-grid">
-                      <div className="form-group">
-                        <label>이름</label>
+                    <div className="form-group">
+                      <label>이름</label>
                       <input type="text" value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} required />
-                      </div>
-                      <div className="form-group">
-                        <label>생년월일</label>
+                    </div>
+                    <div className="form-group">
+                      <label>생년월일</label>
                       <input type="date" value={editForm.dob} onChange={(e) => setEditForm({...editForm, dob: e.target.value})} required />
                     </div>
-                      <div className="form-group">
+                    <div className="form-group">
                       <label>성별</label>
                       <div className="radio-buttons">
                         <label><input type="radio" value="male" checked={editForm.gender === 'male'} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })} /> 남</label>
@@ -214,7 +212,6 @@ const ManageMembers = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="modal-section">
                   <h3>전체 성장 기록</h3>
                   <div className="growth-history-table">
@@ -248,17 +245,15 @@ const ManageMembers = () => {
                     </table>
                   </div>
                 </div>
-
                 <div className="modal-actions-bottom">
-                      <button type="submit" className="action-btn save-btn">저장</button>
+                  <button type="submit" className="action-btn save-btn">저장</button>
                   <button type="button" onClick={closeModal} className="action-btn cancel-btn">취소</button>
-                    </div>
-                  </form>
+                </div>
+              </form>
               <button onClick={closeModal} className="modal-close-btn">&times;</button>
-                      </div>
-                    </div>
+            </div>
+          </div>
         )}
-
         {/* 프로필 목록 테이블 */}
         <div className="table-responsive">
           <table className="members-table">
