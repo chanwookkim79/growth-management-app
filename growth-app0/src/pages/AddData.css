@@ -1,18 +1,22 @@
 /* Styles for AddData component */
 
 .add-data-container {
+  height: calc(100vh - 70px);
+  min-height: 0;
+  overflow: hidden;
   width: 100%;
   max-width: 800px;
   min-width: 320px;
   margin: auto;
-  margin-top: 2rem;
-  margin-bottom: 60px;
-  padding: 2rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 4px 18px rgba(102, 126, 234, 0.08);
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 2rem;
 }
@@ -32,6 +36,16 @@
   background-repeat: no-repeat;
   background-position: right 10px top 50%;
   background-size: .65em auto;
+}
+
+.add-data-form {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
 }
 
 .add-data-form .form-group {

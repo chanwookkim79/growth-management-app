@@ -15,6 +15,9 @@
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  height: calc(100vh - 70px);
+  min-height: 0;
+  overflow: hidden;
 }
 
 .home-header {
@@ -192,16 +195,17 @@
 }
 
 .main-image-wrapper {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70vh;
-  min-height: 320px;
+  height: 100%;
 }
 
 .main-image {
   max-width: 420px;
   width: 90vw;
+  max-height: 80vh;
   height: auto;
   border-radius: 24px;
   box-shadow: 0 4px 24px rgba(102, 126, 234, 0.10);
