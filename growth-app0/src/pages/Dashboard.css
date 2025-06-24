@@ -36,9 +36,9 @@
 
 .chart-container {
   width: 100%;
-  flex: 0 0 340px;
-  max-height: 340px;
-  min-height: 220px;
+  flex: 0 0 220px;
+  max-height: 220px;
+  min-height: 120px;
   margin-bottom: 1.2rem;
   overflow: visible;
   display: flex;
@@ -50,7 +50,7 @@
   width: 100%;
   flex: 1 1 0;
   min-height: 0;
-  max-height: 260px;
+  max-height: 380px;
   overflow-y: auto;
   margin-bottom: 0.5rem;
   display: flex;
@@ -197,7 +197,7 @@
 .growth-table th,
 .growth-table td {
   border: 1px solid #ddd;
-  padding: 10px 8px;
+  padding: 4px 8px;
   text-align: center;
 }
 
