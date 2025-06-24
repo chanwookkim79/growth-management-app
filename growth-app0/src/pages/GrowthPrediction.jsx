@@ -52,7 +52,7 @@ const GrowthPrediction = () => {
        });
 
       if (allData.length < 2) {
-        setErrorMsg("예측을 위한 성장 기록이 2개 이상 필요합니다. (키, 몸무게, 날짜가 모두 입력된 기록만 반영됩니다)");
+        setErrorMsg("예측을 위한 성장 기록이 2개 이상 필요합니다.<br />(키, 몸무게, 날짜가 모두 입력된 기록만 반영됩니다)");
         setPredictionResult(null);
         setChartData(null);
         return;
@@ -198,7 +198,7 @@ const GrowthPrediction = () => {
           </div>
         ) : (
           <div className="chart-card chart-card-empty" style={{height: '60vw', minHeight: 420, maxHeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 18}}>
-            {errorMsg || '프로필을 선택하면 성장 그래프가 표시됩니다.'}
+            {errorMsg ? <span dangerouslySetInnerHTML={{__html: errorMsg}} /> : '프로필을 선택하면 성장 그래프가 표시됩니다.'}
           </div>
         )}
       </div>

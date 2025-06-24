@@ -1,4 +1,7 @@
 .navbar {
+  height: 80px;
+  min-height: 70px;
+  max-height: 90px;
   width: 700px;
   max-width: 90vw;
   margin: 0 auto 100px auto;
@@ -90,6 +93,34 @@
 .hamburger {
   order: 1;
   margin-right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+.hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  gap: 5px;
+}
+
+.hamburger-icon span {
+  display: block;
+  width: 28px;
+  height: 3px;
+  background: #333;
+  border-radius: 2px;
+  transition: all 0.2s;
 }
 
 .navbar-brand {

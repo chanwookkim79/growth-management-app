@@ -16,9 +16,11 @@
   box-shadow: 0 4px 18px rgba(102, 126, 234, 0.08);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 2rem;
+  margin-left: 20%;
+  margin-right: 20%;
 }
 
 .add-data-container select {

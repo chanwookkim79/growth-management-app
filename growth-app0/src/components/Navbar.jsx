@@ -62,7 +62,11 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <button className="hamburger" onClick={toggleMenu}>
-        &#9776; {/* Hamburger Icon */}
+        <span className="hamburger-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
       </button>
       <div className="navbar-brand">
         <Link to="/" className="brand-title">쑥쑥노트</Link>
