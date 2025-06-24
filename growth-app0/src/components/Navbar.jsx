@@ -60,7 +60,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className="navbar main-width">
       <button className="hamburger" onClick={toggleMenu}>
         <span className="hamburger-icon">
           <span></span>
