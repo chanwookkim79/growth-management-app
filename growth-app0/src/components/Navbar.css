@@ -99,6 +99,14 @@
   display: none; /* Hide on desktop */
 }
 
+.brand-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .navbar {

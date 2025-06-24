@@ -62,7 +62,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <button className="brand-menu-btn" onClick={toggleMenu}>성장 관리</button>
+        <span className="brand-title">쑥쑥노트</span>
       </div>
 
       <button className="hamburger" onClick={toggleMenu}>
