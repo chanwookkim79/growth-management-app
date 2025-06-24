@@ -54,14 +54,24 @@
 }
 
 .add-data-form .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .add-data-form label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   font-weight: bold;
   color: #333;
+}
+
+.add-data-form input,
+.add-data-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  box-sizing: border-box;
 }
 
 .add-data-form .button-container {
@@ -70,13 +80,14 @@
 }
 
 .add-data-form button {
-  padding: 12px 25px;
+  width: 100%;
+  padding: 12px 0;
   background-color: #667eea;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   transition: background-color 0.3s;
 }
