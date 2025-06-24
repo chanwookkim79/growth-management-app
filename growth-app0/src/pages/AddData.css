@@ -10,6 +10,7 @@
   min-width: 320px;
   margin: auto;
   margin-top: 0;
+  padding-top: 0;
   margin-bottom: 0;
   padding: 0 0;
   background: #fff;
@@ -51,6 +52,8 @@
   padding-left: 20%;
   padding-right: 20%;
   box-sizing: border-box;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .add-data-form .form-group {
