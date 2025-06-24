@@ -135,7 +135,9 @@
 .common-form-radio-group {
   display: flex;
   gap: 20px;
-  align-items: center;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: flex-start;
   margin-bottom: 0.5rem;
 }
 
@@ -146,6 +148,12 @@
   cursor: pointer;
   font-weight: normal;
   font-size: 1.05rem;
+}
+
+.common-form-group input[type="date"],
+.common-form-group .common-form-radio-group {
+  text-align: left;
+  justify-content: flex-start;
 }
 
 .common-form-button {
@@ -273,4 +281,11 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
+}
+
+.wide-btn {
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+  display: block;
 } 
