@@ -1,5 +1,7 @@
 .navbar {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   background-color: #fff;
   padding: 15px 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -20,13 +22,11 @@
 }
 
 .navbar-links {
-  position: fixed;
+  position: absolute;
   top: 60px;
-  right: 0;
-  left: 0;
-  width: 100%;
-  max-width: 360px;
-  margin: 0 auto;
+  left: 20px;
+  width: 320px;
+  max-width: 90vw;
   background-color: #fff;
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   padding: 24px 24px 16px 24px;
@@ -110,24 +110,15 @@
 /* Responsive styles */
 @media (max-width: 768px) {
   .navbar {
-    flex-wrap: wrap;
+    max-width: 98vw;
   }
-
   .navbar-links {
-    left: -100%;
-    right: auto;
-    width: 70%;
-    max-width: 280px;
-    top: 60px;
+    left: 0;
+    width: 70vw;
+    max-width: 98vw;
     border-radius: 0 12px 12px 0;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     padding: 15px 20px;
-    transition: left 0.3s ease-in-out;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-start;
-    z-index: 1100;
   }
   .navbar-links.active {
     left: 0;
