@@ -49,13 +49,13 @@
 
 /* 공통 카드 레이아웃 */
 .common-card-container {
-  height: 70vh;
-  max-height: 756px;
-  min-height: 0;
-  overflow: hidden;
-  width: 100%;
+  width: 90vw;
   max-width: 700px;
   min-width: 320px;
+  height: calc((100vh - 80px) * 0.9);
+  max-height: calc((100vh - 80px) * 0.9);
+  min-height: 0;
+  overflow: hidden;
   margin: auto;
   margin-top: 0;
   margin-bottom: 0;
@@ -144,11 +144,9 @@
 
 /* 반응형 */
 @media (max-width: 800px) {
-  .common-card-container {
+  .common-card-container, .navbar, .navbar-container {
     max-width: 100vw;
-    width: 100vw;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    width: 98vw;
   }
 }
 @media (max-width: 768px) {
@@ -159,10 +157,10 @@
   }
 }
 @media (max-width: 480px) {
-  .common-card-container {
-    padding: 0.5rem 0.1rem;
-    margin: 0.5rem 0;
-    border-radius: 6px;
+  .common-card-container, .navbar, .navbar-container {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
   }
   .common-form-group {
     margin-bottom: 0.8rem;
@@ -171,4 +169,12 @@
     font-size: 0.9rem;
     margin-bottom: 0.4rem;
   }
+}
+
+/* 메뉴바 가로 크기 90% 적용 (예시: .navbar, .navbar-container 등) */
+.navbar, .navbar-container {
+  width: 90vw;
+  max-width: 700px;
+  min-width: 320px;
+  margin: 0 auto;
 } 
