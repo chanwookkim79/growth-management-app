@@ -59,8 +59,6 @@ const Dashboard = () => {
       // 다른 페이지에서 전달받은 memberId가 있으면 해당 프로필을 기본으로 선택
       if (location.state?.memberId) {
         setSelectedMemberId(location.state.memberId);
-      } else if (membersList.length > 0) {
-        setSelectedMemberId(membersList[0].id);
       }
       setLoading(false);
     };
@@ -159,8 +157,8 @@ const Dashboard = () => {
     },
     plugins: {
       title: {
-        display: true,
-        text: selectedMemberId ? '성장 기록' : '프로필을 선택해주세요',
+        display: false,
+        text: '',
         font: { size: 18 }
       },
       legend: { position: 'top' }
@@ -232,7 +230,6 @@ const Dashboard = () => {
             {chartData ? <Bar options={chartOptions} data={chartData} /> : <p>차트 데이터를 불러오는 중...</p>}
           </div>
           <div className="data-table-container">
-            <h3>상세 기록</h3>
             {pivotedTableData ? (
               <div className="table-wrapper">
                 <table className="growth-table">
