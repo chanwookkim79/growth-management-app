@@ -150,6 +150,29 @@
     border-radius: 6px;
   }
 
+  .content-container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .chart-container {
+    min-height: 180px;
+    max-height: 220px;
+    height: 38vw;
+    margin-bottom: 0.7rem;
+  }
+
+  .data-table-container {
+    max-height: 260px;
+    min-height: 120px;
+    margin-bottom: 0.3rem;
+  }
+
+  .growth-table th, .growth-table td {
+    padding: 2px 4px;
+    font-size: 0.95rem;
+  }
+
   .dashboard-title {
     font-size: 1.3rem;
   }
