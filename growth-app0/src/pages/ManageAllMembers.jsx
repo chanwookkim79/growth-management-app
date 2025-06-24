@@ -63,11 +63,11 @@ const ManageAllMembers = () => {
             <tbody>
               {allMembers.map(member => (
                 <tr key={member.id}>
-                  <td>{member.name}</td>
-                  <td>{member.dob}</td>
-                  <td>{member.gender === 'male' ? '남' : '여'}</td>
-                  <td title={member.userId}>{member.userId.substring(0, 10)}...</td>
-                  <td>{member.initialData.date ? format(member.initialData.date.toDate(), 'yyyy-MM-dd') : 'N/A'}</td>
+                  <td>{member.name || '-'}</td>
+                  <td>{member.dob || '-'}</td>
+                  <td>{member.gender === 'male' ? '남' : member.gender === 'female' ? '여' : '-'}</td>
+                  <td title={member.userId || '-'}>{member.userId ? member.userId.substring(0, 10) + '...' : '-'}</td>
+                  <td>{member.initialData && member.initialData.date && member.initialData.date.toDate ? format(member.initialData.date.toDate(), 'yyyy-MM-dd') : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>

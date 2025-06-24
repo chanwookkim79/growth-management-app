@@ -37,14 +37,17 @@ self.addEventListener('activate', (event) => {
 
 // 네트워크 요청 가로채기
 self.addEventListener('fetch', (event) => {
+  // chrome-extension 요청은 무시
+  if (event.request.url.startsWith('chrome-extension://')) {
+    return;
+  }
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // 캐시에서 찾으면 반환
+        // 캐시에 있으면 반환
         if (response) {
           return response;
         }
-        
         // 캐시에 없으면 네트워크에서 가져오기
         return fetch(event.request).then(
           (response) => {
@@ -52,14 +55,12 @@ self.addEventListener('fetch', (event) => {
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
-
             // 응답을 복제하여 캐시에 저장
             const responseToCache = response.clone();
             caches.open(CACHE_NAME)
               .then((cache) => {
                 cache.put(event.request, responseToCache);
               });
-
             return response;
           }
         );

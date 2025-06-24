@@ -205,6 +205,13 @@ const GrowthPrediction = () => {
           </div>
         )}
       </div>
+      {/* 테이블이 있을 경우 카드 내에서 스크롤되도록 table-wrapper로 감싼다 */}
+      {selectedMember && selectedMember.growthData && selectedMember.growthData.length > 0 && (
+        <div className="table-wrapper" style={{marginTop: '2rem', width: '100%', maxWidth: '100%', overflowX: 'auto'}}>
+          {/* 기존 테이블 렌더링 부분을 이 div 안에 넣으세요 */}
+          {/* 예시: <table className="growth-table">...</table> */}
+        </div>
+      )}
     </div>
   );
 };
