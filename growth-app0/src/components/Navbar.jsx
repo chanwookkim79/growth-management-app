@@ -61,13 +61,12 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/" className="brand-title">쑥쑥노트</Link>
-      </div>
-
       <button className="hamburger" onClick={toggleMenu}>
         &#9776; {/* Hamburger Icon */}
       </button>
+      <div className="navbar-brand">
+        <Link to="/" className="brand-title">쑥쑥노트</Link>
+      </div>
 
       <div ref={menuRef} className={`navbar-links ${isOpen ? 'active' : ''}`}>
         {currentUser ? (
