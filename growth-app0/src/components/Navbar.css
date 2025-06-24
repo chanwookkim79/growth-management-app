@@ -20,9 +20,28 @@
 }
 
 .navbar-links {
-  display: flex;
-  align-items: center;
+  position: fixed;
+  top: 60px;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 24px 24px 16px 24px;
+  border-radius: 12px;
+  display: none;
+  flex-direction: column;
   gap: 20px;
+  align-items: flex-start;
+  z-index: 1100;
+  transition: opacity 0.2s;
+}
+
+.navbar-links.active {
+  display: flex;
+  opacity: 1;
 }
 
 .navbar-links a {
@@ -68,11 +87,12 @@
 }
 
 .hamburger {
-  display: none;
+  display: block;
   font-size: 1.8em;
   background: none;
   border: none;
   cursor: pointer;
+  z-index: 1200;
 }
 
 .app-version {
@@ -86,24 +106,21 @@
   }
 
   .navbar-links {
-    position: fixed;
-    top: 60px; /* Adjust based on navbar height */
     left: -100%;
+    right: auto;
     width: 70%;
-    max-width: 280px; /* 최대 너비 추가 */
-    max-height: calc(100vh - 60px); /* 화면 높이를 넘지 않도록 최대 높이 설정 */
-    overflow-y: auto; /* 내용이 많아지면 스크롤 */
-    background-color: white;
+    max-width: 280px;
+    top: 60px;
+    border-radius: 0 12px 12px 0;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    padding: 15px 20px; /* Adjusted padding */
+    padding: 15px 20px;
     transition: left 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Adjusted gap */
+    gap: 20px;
     align-items: flex-start;
-    z-index: 1100; /* Ensure menu is above all other content */
+    z-index: 1100;
   }
-
   .navbar-links.active {
     left: 0;
   }
@@ -136,10 +153,6 @@
     padding-top: 20px;
     font-size: 0.8em;
     color: #999;
-  }
-
-  .hamburger {
-    display: block;
   }
 }
 

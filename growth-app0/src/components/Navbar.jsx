@@ -62,7 +62,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/" onClick={closeMenu}>성장 관리</Link>
+        <button className="brand-menu-btn" onClick={toggleMenu}>성장 관리</button>
       </div>
 
       <button className="hamburger" onClick={toggleMenu}>

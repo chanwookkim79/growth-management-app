@@ -207,18 +207,20 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="controls-container">
-        <div className="member-select-container">
+        <div className="form-group">
           <label htmlFor="member-select">프로필 선택</label>
           <select
             id="member-select"
             value={selectedMemberId || ''}
             onChange={handleMemberChange}
-            className="form-control member-select-dropdown"
+            className="form-control"
             required
           >
-            <option value="" disabled>-- 프로필을 선택하세요 --</option>
+            <option value="">-- 프로필을 선택하세요 --</option>
             {members.map(member => (
-              <option key={member.id} value={member.id}>{member.name}</option>
+              <option key={member.id} value={member.id}>
+                {member.name} (생년월일: {member.dob})
+              </option>
             ))}
           </select>
         </div>
