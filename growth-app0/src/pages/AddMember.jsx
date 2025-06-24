@@ -66,53 +66,51 @@ const AddMember = () => {
     <div className="common-card-container">
       <form onSubmit={handleSubmit} className="common-card-content">
         <h2>프로필 추가</h2>
-        <div className="common-form-row-3col">
-          <div className="common-form-group">
-            <label htmlFor="name" className="common-form-label">이름</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="common-form-input"
-              required
-            />
-          </div>
-          <div className="common-form-group">
-            <label htmlFor="dob" className="common-form-label">생년월일</label>
-            <input
-              id="dob"
-              type="date"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
-              className="common-form-input"
-              required
-            />
-          </div>
-          <div className="common-form-group">
-            <label className="common-form-label">성별</label>
-            <div className="common-form-radio-group">
-              <label className="common-form-radio-label">
-                <input
-                  type="radio"
-                  value="male"
-                  checked={gender === 'male'}
-                  onChange={(e) => setGender(e.target.value)}
-                  required
-                />
-                남
-              </label>
-              <label className="common-form-radio-label">
-                <input
-                  type="radio"
-                  value="female"
-                  checked={gender === 'female'}
-                  onChange={(e) => setGender(e.target.value)}
-                  required
-                />
-                여
-              </label>
-            </div>
+        <div className="common-form-group">
+          <label htmlFor="name" className="common-form-label">이름</label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="common-form-input"
+            required
+          />
+        </div>
+        <div className="common-form-group">
+          <label htmlFor="dob" className="common-form-label">생년월일</label>
+          <input
+            id="dob"
+            type="date"
+            value={dob}
+            onChange={(e) => setDob(e.target.value)}
+            className="common-form-input"
+            required
+          />
+        </div>
+        <div className="common-form-group">
+          <label className="common-form-label">성별</label>
+          <div className="common-form-radio-group">
+            <label className="common-form-radio-label">
+              <input
+                type="radio"
+                value="male"
+                checked={gender === 'male'}
+                onChange={(e) => setGender(e.target.value)}
+                required
+              />
+              남
+            </label>
+            <label className="common-form-radio-label">
+              <input
+                type="radio"
+                value="female"
+                checked={gender === 'female'}
+                onChange={(e) => setGender(e.target.value)}
+                required
+              />
+              여
+            </label>
           </div>
         </div>
         <div className="common-form-group">
@@ -137,7 +135,7 @@ const AddMember = () => {
             required
           />
         </div>
-        <button type="submit" className="common-form-button" disabled={loading}>
+        <button type="submit" className="common-form-button wide-btn" disabled={loading}>
           {loading ? '등록 중...' : '등록'}
         </button>
       </form>
