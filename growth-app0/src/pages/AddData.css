@@ -118,4 +118,13 @@
   }
 }
 
+@media (max-width: 800px) {
+  .add-data-container {
+    max-width: 100vw;
+    width: 100vw;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
 /* Modal Styles - 중복 제거, 공통 스타일(form-styles.css) 사용 */ 

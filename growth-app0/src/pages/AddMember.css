@@ -68,11 +68,12 @@
 }
 
 /* 반응형 스타일 */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .add-member-container {
-    max-width: 98vw;
-    padding: 1rem;
-    gap: 0.7rem;
+    max-width: 100vw;
+    width: 100vw;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 }
 
