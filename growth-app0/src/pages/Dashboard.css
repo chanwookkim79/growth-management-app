@@ -217,11 +217,21 @@
   margin-bottom: 1rem;
 }
 
-.form-group label {
+.form-group label, .member-select-form label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   font-weight: bold;
   color: #333;
+}
+
+.form-group select, .member-select, .member-select-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  margin-bottom: 1.5rem;
 }
 
 .form-control {
